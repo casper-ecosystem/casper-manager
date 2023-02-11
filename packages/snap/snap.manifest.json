@@ -1,24 +1,33 @@
 {
-  "version": "0.1.0",
-  "description": "An example Snap written in TypeScript.",
-  "proposedName": "TypeScript Example Snap",
+  "version": "1.0.0",
+  "description": "Casper Snap.",
+  "proposedName": "@casperholders/casper-snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/template-snap-monorepo.git"
+    "url": "https://github.com/casperholders/casper-snap.git"
   },
   "source": {
-    "shasum": "naL9tJT7QHAFER/TGfTcjwUFZUMhrsWY5f8XqX28M/g=",
+    "shasum": "RQ5NBTMG65MNTBXyWYr8WfRC64AOT6d+i1hdTKRkX50=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
         "iconPath": "images/icon.svg",
-        "packageName": "snap",
+        "packageName": "@casperholders/casper-snap",
         "registry": "https://registry.npmjs.org/"
       }
     }
   },
   "initialPermissions": {
-    "snap_confirm": {}
+    "snap_dialog": {},
+    "endowment:rpc": {
+      "dapps": true,
+      "snaps": false
+    },
+    "snap_getBip44Entropy": [
+      {
+        "coinType": 506
+      }
+    ]
   },
   "manifestVersion": "0.1"
 }
