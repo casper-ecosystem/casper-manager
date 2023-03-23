@@ -1,0 +1,31 @@
+{
+  "name": "@casperholders/casper-snap-helper",
+  "version": "1.0.2",
+  "description": "Simple helper to use the casper snap",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "yarn run build:lib && yarn run build:types",
+    "build:lib": "tsc --build",
+    "build:types": "tsc --emitDeclarationOnly",
+    "docs": "typedoc",
+    "lint": "yarn run lint:style && yarn run lint:types",
+    "lint:style": "eslint --color 'src/**/*.{js,ts,tsx}'",
+    "lint:style:fix": "yarn run lint:style --fix",
+    "lint:types": "tsc --noEmit --pretty",
+    "test": "exit 0"
+  },
+  "dependencies": {
+    "@metamask/providers": "^10.2.1",
+    "buffer": "^5.7.1",
+    "casper-js-sdk": "^2.11.1"
+  },
+  "devDependencies": {
+    "esdoc-typescript-plugin": "^1.0.1",
+    "typedoc": "^0.23.28"
+  }
+}

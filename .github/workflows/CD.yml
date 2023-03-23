@@ -1,0 +1,38 @@
+name: Publish Snap
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@casperholders'
+
+      - run: yarn install --immutable
+      - run: yarn build
+
+      - name: Build helper doc
+        run: cd packages/lib && yarn docs
+
+      - name: Deploy docs
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: packages/lib/docs
+
+      - name: Publish npm snap
+        run: cd packages/snap && npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish npm helper
+        run: cd packages/lib && npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

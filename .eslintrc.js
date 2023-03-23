@@ -36,6 +36,7 @@ module.exports = {
     '!.prettierrc.js',
     '**/!.eslintrc.js',
     '**/dist*/',
+    '**/docs*/',
     '**/*__GENERATED__*',
     '**/build',
     '**/public',
