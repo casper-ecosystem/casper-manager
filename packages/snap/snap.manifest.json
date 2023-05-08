@@ -1,5 +1,5 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Casper Snap.",
   "proposedName": "@casperholders/casper-snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/casperholders/casper-snap.git"
   },
   "source": {
-    "shasum": "FATDmLvnpc5WY4NT+Zj00R07VXL1oPfT2lIy3Qpjw0I=",
+    "shasum": "BP/zcK4FUBPh03vhGuYVonh0FaQ2ahbU4AT/IsF8EuI=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
