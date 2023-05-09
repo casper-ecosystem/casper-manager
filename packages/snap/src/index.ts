@@ -43,7 +43,12 @@ async function promptUserDeployInfo(deployInfo: any) {
     type: NodeType.Text | NodeType.Copyable;
   }[] = [];
   Object.entries(deployInfo.deployArgs).forEach((arg: any) => {
-    deployArgComponents.push(text(arg[0]), copyable(arg[1]));
+    if (Array.isArray(arg[1])) {
+      const value = arg[1].map((v: any) => copyable(v));
+      deployArgComponents.push(text(arg[0]), ...value);
+    } else {
+      deployArgComponents.push(text(arg[0]), copyable(arg[1]));
+    }
   });
   return await snap.request({
     method: 'snap_dialog',

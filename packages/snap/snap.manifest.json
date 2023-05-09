@@ -1,5 +1,5 @@
 {
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Interact with the Casper Network !",
   "proposedName": "Casper Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/casperholders/casper-snap.git"
   },
   "source": {
-    "shasum": "KMt/6SlIEkd4Li1MB2llCcpTUm489FKy6KchHx0DE5g=",
+    "shasum": "5H/64smwzNuMnQnwuYRdizXzatbS0DTDUmwCvnN4Oa0=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
