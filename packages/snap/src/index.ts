@@ -48,7 +48,7 @@ async function promptUserDeployInfo(deployInfo: any) {
   return await snap.request({
     method: 'snap_dialog',
     params: {
-      type: 'Confirmation',
+      type: 'confirmation',
       content: panel([
         heading(`Sign ${deployInfo.deployType}`),
         text('Deploy Hash'),
