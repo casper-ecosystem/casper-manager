@@ -1,6 +1,6 @@
 {
   "name": "@casperholders/casper-snap",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "MetaMask Snap for the Casper Blockchain.",
   "repository": {
     "type": "git",

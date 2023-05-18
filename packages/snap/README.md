@@ -34,6 +34,14 @@ Ex:
 }
 ```
 
-`msg` -> Most likely your deploy hash to sign. Ex: `Buffer.from(deploy.hash).toString('hex')`
+`message` -> Your deploy hash to sign. Ex: `Buffer.from(deploy.hash).toString('hex')`
+
+`addressIndex` -> Default to 0. Define the index of the Casper address to derive.
+
+### casper_signMessage
+
+Take 2 arguments :
+
+`message` -> Your message to sign. Ex: `Hello World`
 
 `addressIndex` -> Default to 0. Define the index of the Casper address to derive.

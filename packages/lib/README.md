@@ -12,6 +12,7 @@ import {
   installSnap,
   isFlask,
   signDeploy,
+  signMessage,
 } from '@casperholders/casper-snap-helper';
 import { CLPublicKey, DeployUtil, motesToCSPR } from 'casper-js-sdk';
 
@@ -46,5 +47,9 @@ if (flask) {
     publicKey: address,
   });
   console.log(DeployUtil.deployToJson(signedTransfer));
+  const signedMessage = signMessage('Hello world', {
+    addressIndex: 0,
+  });
+  console.log(signedMessage);
 }
 ```

@@ -77,20 +77,20 @@ async function promptUserDeployInfo(deployInfo: any) {
 }
 
 /**
- * Sign a message.
+ * Sign a deploy.
  *
  * @param deployInfo - Confirmation message.
- * @param msg - Message.
+ * @param deployHash - Message.
  * @param addressIndex - Address index.
  */
-async function sign(deployInfo: any, msg: string, addressIndex = 0) {
+async function sign(deployInfo: any, deployHash: string, addressIndex = 0) {
   const bip44Node = await snap.request({
     method: 'snap_getBip44Entropy',
     params: {
       coinType: 506,
     },
   });
-  const message = Buffer.from(msg, 'hex');
+  const message = Buffer.from(deployHash, 'hex');
   const bip44Nodeaddr = await getBIP44AddressKeyDeriver(bip44Node);
   const addressKey0 = await bip44Nodeaddr(addressIndex);
   const response = await promptUserDeployInfo(deployInfo);
@@ -122,6 +122,54 @@ async function sign(deployInfo: any, msg: string, addressIndex = 0) {
 }
 
 /**
+ * Sign a message.
+ *
+ * @param msg - Message.
+ * @param addressIndex - Address index.
+ */
+async function signMessage(msg: string, addressIndex = 0) {
+  const bip44Node = await snap.request({
+    method: 'snap_getBip44Entropy',
+    params: {
+      coinType: 506,
+    },
+  });
+  const bip44Nodeaddr = await getBIP44AddressKeyDeriver(bip44Node);
+  const addressKey0 = await bip44Nodeaddr(addressIndex);
+  const message = Uint8Array.from(Buffer.from(`Casper Message:\n${msg}`));
+  const response = await snap.request({
+    method: 'snap_dialog',
+    params: {
+      type: 'confirmation',
+      content: panel([heading(`Sign message`), text('Message'), copyable(msg)]),
+    },
+  });
+
+  if (!response) {
+    return false;
+  }
+
+  if (addressKey0.privateKeyBytes) {
+    if (addressKey0.curve === 'ed25519') {
+      return {
+        signature: Buffer.from(
+          nacl.sign_detached(message, addressKey0.privateKeyBytes),
+        ).toString('hex'),
+      };
+    }
+
+    if (addressKey0.curve === 'secp256k1') {
+      const res = ecdsaSign(sha256(message), addressKey0.privateKeyBytes);
+      return { signature: Buffer.from(res.signature).toString('hex') };
+    }
+    return {
+      error: `Unsupported curve : ${addressKey0.curve}. Only Secp256K1 && Ed25519 are supported.`,
+    };
+  }
+  return { error: 'No private key associated with the account.' };
+}
+
+/**
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
  *
  * @param args - The request handler args as object.
@@ -143,6 +191,11 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
     case 'casper_sign':
       return sign(
         request?.params?.deployInfo,
+        request?.params?.message,
+        request?.params?.addressIndex,
+      );
+    case 'casper_signMessage':
+      return signMessage(
         request?.params?.message,
         request?.params?.addressIndex,
       );

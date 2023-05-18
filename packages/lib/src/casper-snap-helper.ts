@@ -80,4 +80,33 @@ async function signDeploy(deploy: DeployUtil.Deploy, options: any = {}) {
   throw new Error('Rejected transaction.');
 }
 
-export { getAccount, signDeploy };
+/**
+ * Sign a given string message with the corresponding public key.
+ * You must pass the active public key from the user and the public key
+ * where the deploy is going to be used.
+ *
+ * @param message - String message.
+ * @param options - Options object.
+ * @returns Message signature.
+ */
+async function signMessage(message: string, options: any = {}) {
+  const response = (await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: {
+      snapId: options.snapID ?? SNAP_ID,
+      request: {
+        method: 'casper_sign_message',
+        params: {
+          addressIndex: options.addressIndex,
+          message,
+        },
+      },
+    },
+  })) as unknown as GetSnapCasperSign;
+  if (response) {
+    return response.signature;
+  }
+  throw new Error('Rejected transaction.');
+}
+
+export { getAccount, signDeploy, signMessage };
