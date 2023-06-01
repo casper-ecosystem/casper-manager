@@ -1,2 +1,2 @@
-export * from './casper-snap-helper';
+export * from './casper-manager-helper';
 export * from './snap';

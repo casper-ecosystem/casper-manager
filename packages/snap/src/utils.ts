@@ -10,10 +10,8 @@ import {
   CLValue,
   DeployUtil,
   encodeBase16,
-  motesToCSPR,
 } from 'casper-js-sdk';
-
-export const SNAP_ID = 'npm:@casperholders/casper-snap';
+import { FixedNumber } from '@ethersproject/bignumber';
 
 /**
  * Sanitise nested lists.
@@ -86,7 +84,13 @@ function parseDeployArg(arg: CLValue): string {
       return `${status} ${parsed}`;
 
     case CLTypeTag.Map:
-      return arg.value().toString();
+      return Array.from(arg.toJSON().entries())
+        .map((member) => {
+          return `${sanitiseNestedLists(
+            (member as any[])[0],
+          )}: ${sanitiseNestedLists((member as any[])[1])}`;
+        })
+        .join(',\n');
 
     case CLTypeTag.Tuple1:
       return parseDeployArg(arg.value()[0]);
@@ -183,24 +187,33 @@ function parseTransferData(
       );
     }
   }
-
   const amount = transferDeploy?.getArgByName('amount')?.value();
-  const id = transferDeploy
-    ?.getArgByName('id')
-    ?.value()
-    .unwrap()
-    .value()
-    .toString();
 
-  transferArgs.Amount = `${motesToCSPR(amount).toString()} CSPR`;
+  const id = parseDeployArg(transferDeploy?.getArgByName('id') as CLValue);
+
+  transferArgs.Amount = `${convertMotesToCasper(amount.toString())} CSPR`;
+  transferArgs.Motes = `${amount.toString()}`;
   transferArgs['Transfer ID'] = id;
 
   return transferArgs;
 }
 
 /**
- * @typedef { import('casper-js-sdk').DeployUtil.Deploy } Deploy
+ * Convert motes to casper.
+ *
+ * @param motesAmount - Amount in motes.
+ * @returns Amount in string.
  */
+function convertMotesToCasper(motesAmount: string) {
+  try {
+    return FixedNumber.from(motesAmount)
+      .divUnsafe(FixedNumber.from(1000000000))
+      .toString();
+  } catch (e) {
+    console.log(e);
+    return '0';
+  }
+}
 
 /**
  * Parse a deploy into an object.
@@ -216,9 +229,11 @@ export function deployToObject(deploy: DeployUtil.Deploy, signingKey: string) {
     throw new Error('Signer does not yet support non-standard payment');
   }
 
-  const payment = `${motesToCSPR(
-    deploy.payment.moduleBytes?.getArgByName('amount')?.value(),
-  ).toString()} CSPR`;
+  const paymentValue = deploy.payment.moduleBytes
+    ?.getArgByName('amount')
+    ?.value();
+  const payment = `${convertMotesToCasper(paymentValue)} CSPR`;
+  const paymentMotes = `${paymentValue.toString()}`;
 
   let type;
 
@@ -274,7 +289,33 @@ export function deployToObject(deploy: DeployUtil.Deploy, signingKey: string) {
     timestamp: new Date(header.timestamp).toLocaleString(),
     gasPrice: header.gasPrice.toString(),
     payment,
+    paymentMotes,
     deployType: type,
     deployArgs,
   };
+}
+
+/**
+ * Add a signature to a deploy and validate it.
+ *
+ * @param deploy - Deploy object.
+ * @param signature - Signature bytes.
+ * @param publicKeyHex - Public key hex string.
+ * @returns Object - Either an object containing the deploy or an error.
+ */
+export function addSignatureAndValidateDeploy(
+  deploy: DeployUtil.Deploy,
+  signature: Uint8Array,
+  publicKeyHex: string,
+) {
+  const signedDeploy = DeployUtil.setSignature(
+    deploy,
+    signature,
+    CLPublicKey.fromHex(publicKeyHex),
+  );
+  const validatedSignedDeploy = DeployUtil.validateDeploy(signedDeploy);
+  if (validatedSignedDeploy.ok) {
+    return { deploy: DeployUtil.deployToJson(validatedSignedDeploy.val) };
+  }
+  return { error: 'Unable to verify deploy after signature.' };
 }

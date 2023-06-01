@@ -1,7 +1,10 @@
-import { Buffer } from 'buffer/';
-import { CLPublicKey, DeployUtil, Keys } from 'casper-js-sdk';
-import { GetSnapCasperAccount, GetSnapCasperSign } from './types';
-import { deployToObject, SNAP_ID } from './utils';
+import { CLPublicKey, DeployUtil } from 'casper-js-sdk';
+import {
+  GetSnapCasperAccount,
+  GetSnapCasperSign,
+  GetSnapCasperSignMessage,
+} from './types';
+import { SNAP_ID } from './constants';
 
 /**
  * Get a Casper Account from the snap.
@@ -22,23 +25,10 @@ async function getAccount(addressIndex = 0, snapId = SNAP_ID) {
       },
     },
   })) as unknown as GetSnapCasperAccount;
-  const publicKeyBytes = Buffer.from(response.publicKey, 'hex');
-  if (response.curve === Keys.SignatureAlgorithm.Ed25519) {
-    return new CLPublicKey(
-      publicKeyBytes,
-      Keys.SignatureAlgorithm.Ed25519,
-    ).toHex();
+  if (response.error) {
+    throw new Error(response.error);
   }
-
-  if (response.curve === Keys.SignatureAlgorithm.Secp256K1) {
-    return new CLPublicKey(
-      publicKeyBytes,
-      Keys.SignatureAlgorithm.Secp256K1,
-    ).toHex();
-  }
-  throw new Error(
-    `Unsupported curve. Received ${response.curve}. Only Secp256K1 && Ed25519 are supported.`,
-  );
+  return CLPublicKey.fromHex(response.publicKey);
 }
 
 /**
@@ -59,23 +49,25 @@ async function signDeploy(deploy: DeployUtil.Deploy, options: any = {}) {
         method: 'casper_sign',
         params: {
           addressIndex: options.addressIndex,
-          deployInfo: deployToObject(deploy, options.publicKey),
-          message: Buffer.from(deploy.hash).toString('hex'),
+          deployJson: DeployUtil.deployToJson(deploy),
         },
       },
     },
   })) as unknown as GetSnapCasperSign;
-  if (response) {
-    const signedDeploy = DeployUtil.setSignature(
-      deploy,
-      Buffer.from(response.signature, 'hex'),
-      CLPublicKey.fromHex(options.publicKey),
-    );
-    const validatedSignedDeploy = DeployUtil.validateDeploy(signedDeploy);
-    if (validatedSignedDeploy.ok) {
-      return validatedSignedDeploy.val;
+  if (response.error) {
+    throw new Error(response.error);
+  }
+
+  if (response.deploy) {
+    const signedDeploy = DeployUtil.deployFromJson(response.deploy);
+    if (signedDeploy.ok) {
+      const validatedSignedDeploy = DeployUtil.validateDeploy(signedDeploy.val);
+      if (validatedSignedDeploy.ok) {
+        return validatedSignedDeploy.val;
+      }
+      throw validatedSignedDeploy.val;
     }
-    throw validatedSignedDeploy.val;
+    throw signedDeploy.val;
   }
   throw new Error('Rejected transaction.');
 }
@@ -102,8 +94,12 @@ async function signMessage(message: string, options: any = {}) {
         },
       },
     },
-  })) as unknown as GetSnapCasperSign;
-  if (response) {
+  })) as unknown as GetSnapCasperSignMessage;
+  if (response.error) {
+    throw new Error(response.error);
+  }
+
+  if (response.signature) {
     return response.signature;
   }
   throw new Error('Rejected transaction.');

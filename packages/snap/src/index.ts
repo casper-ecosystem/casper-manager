@@ -4,6 +4,8 @@ import * as nacl from 'tweetnacl-ts';
 import { sha256 } from 'ethereum-cryptography/sha256';
 import { ecdsaSign } from 'ethereum-cryptography/secp256k1-compat';
 import { copyable, heading, NodeType, panel, text } from '@metamask/snaps-ui';
+import { CLPublicKey, DeployUtil, Keys } from 'casper-js-sdk';
+import { addSignatureAndValidateDeploy, deployToObject } from './utils';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires,import/no-extraneous-dependencies
 globalThis.Buffer = require('buffer/').Buffer;
@@ -21,23 +23,42 @@ async function getCSPRAddress(addressIndex = 0) {
     },
   });
   const bip44Nodeaddr = await getBIP44AddressKeyDeriver(bip44Node);
-  const addressKey0 = await bip44Nodeaddr(addressIndex);
+  const addressKey = await bip44Nodeaddr(addressIndex);
+  if (addressKey.curve === Keys.SignatureAlgorithm.Ed25519) {
+    return {
+      publicKey: new CLPublicKey(
+        addressKey.compressedPublicKeyBytes,
+        Keys.SignatureAlgorithm.Ed25519,
+      ).toHex(),
+    };
+  }
+
+  if (addressKey.curve === Keys.SignatureAlgorithm.Secp256K1) {
+    return {
+      publicKey: new CLPublicKey(
+        addressKey.compressedPublicKeyBytes,
+        Keys.SignatureAlgorithm.Secp256K1,
+      ).toHex(),
+    };
+  }
   return {
-    publicKey: Buffer.from(addressKey0.compressedPublicKeyBytes).toString(
-      'hex',
-    ),
-    curve: addressKey0.curve,
+    error: `Unsupported curve. Received ${addressKey.curve}. Only Secp256K1 && Ed25519 are supported.`,
   };
 }
 
 /**
  * Displays a prompt to the user in the MetaMask UI.
  *
- * @param deployInfo - Object that represent the info of the deploy.
+ * @param deploy - Deploy object that will be parsed to display the content of if.
+ * @param signingKey - Hex encoded public key address.
  * @returns `true` if the user accepted the confirmation,
  * and `false` otherwise.
  */
-async function promptUserDeployInfo(deployInfo: any) {
+async function promptUserDeployInfo(
+  deploy: DeployUtil.Deploy,
+  signingKey: string,
+) {
+  const deployInfo = deployToObject(deploy, signingKey);
   const deployArgComponents: {
     value: string;
     type: NodeType.Text | NodeType.Copyable;
@@ -70,6 +91,8 @@ async function promptUserDeployInfo(deployInfo: any) {
         copyable(deployInfo.timestamp),
         text('Gas'),
         copyable(deployInfo.payment),
+        text('Gas (Motes)'),
+        copyable(deployInfo.paymentMotes),
         panel([heading('Deploy Arguments'), ...deployArgComponents]),
       ]),
     },
@@ -79,11 +102,19 @@ async function promptUserDeployInfo(deployInfo: any) {
 /**
  * Sign a deploy.
  *
- * @param deployInfo - Confirmation message.
- * @param deployHash - Message.
+ * @param deployJson - JSON formatted deploy.
  * @param addressIndex - Address index.
  */
-async function sign(deployInfo: any, deployHash: string, addressIndex = 0) {
+async function sign(deployJson: string, addressIndex = 0) {
+  const publicKeyHex = (await getCSPRAddress(addressIndex)).publicKey;
+  if (!publicKeyHex) {
+    return { error: `Unable to get public key at index ${addressIndex}.` };
+  }
+  const deploy = DeployUtil.deployFromJson(deployJson);
+  if (!(deploy.val instanceof DeployUtil.Deploy)) {
+    return { error: 'Unable to convert json into deploy object.' };
+  }
+  const deployHash = Buffer.from(deploy.val.hash).toString('hex');
   const bip44Node = await snap.request({
     method: 'snap_getBip44Entropy',
     params: {
@@ -92,33 +123,35 @@ async function sign(deployInfo: any, deployHash: string, addressIndex = 0) {
   });
   const message = Buffer.from(deployHash, 'hex');
   const bip44Nodeaddr = await getBIP44AddressKeyDeriver(bip44Node);
-  const addressKey0 = await bip44Nodeaddr(addressIndex);
-  const response = await promptUserDeployInfo(deployInfo);
+  const addressKey = await bip44Nodeaddr(addressIndex);
+  const response = await promptUserDeployInfo(deploy.val, publicKeyHex);
   if (!response) {
     return false;
   }
 
-  if (addressKey0.privateKeyBytes) {
-    if (addressKey0.curve === 'ed25519') {
-      return {
-        signature: Buffer.from(
-          nacl.sign_detached(message, addressKey0.privateKeyBytes),
-        ).toString('hex'),
-      };
+  if (addressKey.privateKeyBytes) {
+    if (addressKey.curve === 'ed25519') {
+      const signature = Buffer.from(
+        nacl.sign_detached(message, addressKey.privateKeyBytes),
+      );
+      return addSignatureAndValidateDeploy(deploy.val, signature, publicKeyHex);
     }
 
-    if (addressKey0.curve === 'secp256k1') {
+    if (addressKey.curve === 'secp256k1') {
       const res = ecdsaSign(
         sha256(Buffer.from(message)),
-        addressKey0.privateKeyBytes,
+        addressKey.privateKeyBytes,
       );
-      return { signature: Buffer.from(res.signature).toString('hex') };
+      const signature = Buffer.from(res.signature);
+      return addSignatureAndValidateDeploy(deploy.val, signature, publicKeyHex);
     }
     return {
-      error: `Unsupported curve : ${addressKey0.curve}. Only Secp256K1 && Ed25519 are supported.`,
+      error: `Unsupported curve : ${addressKey.curve}. Only Secp256K1 && Ed25519 are supported.`,
     };
   }
-  return { error: 'No private key associated with the account.' };
+  return {
+    error: `No private key associated with the account ${addressIndex}.`,
+  };
 }
 
 /**
@@ -189,11 +222,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
     case 'casper_getAccount':
       return getCSPRAddress(request?.params?.addressIndex);
     case 'casper_sign':
-      return sign(
-        request?.params?.deployInfo,
-        request?.params?.message,
-        request?.params?.addressIndex,
-      );
+      return sign(request?.params?.deployJson, request?.params?.addressIndex);
     case 'casper_signMessage':
       return signMessage(
         request?.params?.message,

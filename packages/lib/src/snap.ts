@@ -1,5 +1,5 @@
 import { GetSnapsResponse } from './types';
-import { SNAP_ID } from './utils';
+import { SNAP_ID } from './constants';
 
 /**
  * Detect if the wallet injecting the ethereum object is Flask.

@@ -15,11 +15,17 @@ export type GetSnapsResponse = Record<string, Snap>;
 
 export type GetSnapCasperAccount = {
   publicKey: string;
-  curve: string;
+  error: string;
 };
 
 export type GetSnapCasperSign = {
+  deploy: string;
+  error: string;
+};
+
+export type GetSnapCasperSignMessage = {
   signature: string;
+  error: string;
 };
 
 export type Snap = {

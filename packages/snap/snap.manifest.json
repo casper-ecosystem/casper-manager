@@ -1,18 +1,18 @@
 {
   "version": "1.0.6",
-  "description": "Interact with the Casper Network !",
-  "proposedName": "Casper Snap",
+  "description": "Sign deploys and messages for the Casper Blockchain with your Casper account(s).",
+  "proposedName": "Casper Manager",
   "repository": {
     "type": "git",
     "url": "https://github.com/casperholders/casper-snap.git"
   },
   "source": {
-    "shasum": "NO19QE8/uUsj9ehY8Oza5eN1z41Jyshq5GnR/oxVzYw=",
+    "shasum": "GV0NGQA/qbdV8PvmXn0GuYCAE4+r+zALit6Rdn67hp8=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
         "iconPath": "images/icon.svg",
-        "packageName": "@casperholders/casper-snap",
+        "packageName": "@casperholders/casper-manager",
         "registry": "https://registry.npmjs.org/"
       }
     }

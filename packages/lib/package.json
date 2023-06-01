@@ -1,7 +1,7 @@
 {
-  "name": "@casperholders/casper-snap-helper",
+  "name": "@casperholders/casper-manager-helper",
   "version": "1.0.6",
-  "description": "Simple helper to use the casper snap",
+  "description": "Simple helper to use the casper manager",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

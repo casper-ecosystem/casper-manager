@@ -13,7 +13,7 @@ import {
   isFlask,
   signDeploy,
   signMessage,
-} from '@casperholders/casper-snap-helper';
+} from '@casperholders/casper-manager-helper';
 import { CLPublicKey, DeployUtil, motesToCSPR } from 'casper-js-sdk';
 
 const flask = await isFlask();
@@ -44,7 +44,6 @@ if (flask) {
   );
   const signedTransfer = signDeploy(transfer, {
     addressIndex: 0,
-    publicKey: address,
   });
   console.log(DeployUtil.deployToJson(signedTransfer));
   const signedMessage = signMessage('Hello world', {
