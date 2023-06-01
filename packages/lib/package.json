@@ -17,6 +17,7 @@
     "lint:style": "eslint --color 'src/**/*.{js,ts,tsx}'",
     "lint:style:fix": "yarn run lint:style --fix",
     "lint:types": "tsc --noEmit --pretty",
+    "release": "release-it",
     "test": "exit 0"
   },
   "dependencies": {
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "esdoc-typescript-plugin": "^1.0.1",
+    "release-it": "^15.10.3",
     "typedoc": "^0.23.28"
   }
 }

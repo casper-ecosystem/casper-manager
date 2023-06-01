@@ -1,13 +1,33 @@
-name: Publish Snap
+name: release
+run-name: "release [${{ inputs.type }}] by @${{ github.actor }}${{ github.event.inputs.dry == 'true' && ' (dry run)' || '' }}"
 
 on:
   workflow_dispatch:
+    inputs:
+      type:
+        type: choice
+        description: Choose release
+        options:
+          - auto
+          - patch
+          - minor
+          - major
+          - alpha
+          - beta
+        default: auto
+      dry:
+        type: boolean
+        description: Dry release
+        default: false
 
 jobs:
-  build:
+  publish:
+    name: Publish release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
@@ -23,16 +43,33 @@ jobs:
         run: cd packages/lib && yarn docs
 
       - name: Deploy docs
+        if: ${{ github.event.inputs.dry == 'false' }}
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: packages/lib/docs
 
-      - name: Publish npm snap
-        run: cd packages/snap && npm publish --access public
+      - name: NPM config
+        run: npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish npm helper
-        run: cd packages/lib && npm publish --access public
+      - name: Git config
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+      - name: Release lib
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TYPE_ARG: ${{ fromJSON('{"auto":"", "patch":"--patch", "minor":"--minor", "major":"--major", "beta":"--preRelease=beta --npm.tag=next", "alpha":"--preRelease=alpha --npm.tag=next"}')[github.event.inputs.type] }}
+          DRY_ARG: ${{ github.event.inputs.dry == 'true' && '--dry-run' || '' }}
+        run: cd packages/lib && yarn run release --ci --verbose $TYPE_ARG $DRY_ARG
+
+      - name: Release snap
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TYPE_ARG: ${{ fromJSON('{"auto":"", "patch":"--patch", "minor":"--minor", "major":"--major", "beta":"--preRelease=beta --npm.tag=next", "alpha":"--preRelease=alpha --npm.tag=next"}')[github.event.inputs.type] }}
+          DRY_ARG: ${{ github.event.inputs.dry == 'true' && '--dry-run' || '' }}
+        run: cd packages/snap && yarn run release --ci --verbose $TYPE_ARG $DRY_ARG
