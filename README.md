@@ -47,3 +47,9 @@ yarn install
 ```sh
 yarn start
 ```
+
+- Run snap tests
+
+```sh
+yarn test
+```

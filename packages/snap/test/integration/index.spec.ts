@@ -6,9 +6,6 @@ import {
   initSnapEnv,
 } from '@chainsafe/dappeteer';
 import { CLPublicKey, DeployUtil } from 'casper-js-sdk';
-import { Serializable } from '@chainsafe/dappeteer/dist/page';
-import { flaskOnly } from '@chainsafe/dappeteer/dist/snap';
-import { isMetaMaskErrorObject } from '@chainsafe/dappeteer/dist/snap/utils';
 import {
   fakeModuleBytes,
   fakeStoredContractByHash,
@@ -54,10 +51,15 @@ async function testDeploy(
   metaMask: Dappeteer,
   deploy: string,
 ) {
-  const resPromise = invokeSnap2(connectedPage, snapId, 'casper_sign', {
-    deployJson: deploy,
-    addressIndex: 0,
-  });
+  const resPromise = metaMask.snaps.invokeSnap(
+    connectedPage,
+    snapId,
+    'casper_sign',
+    {
+      deployJson: deploy,
+      addressIndex: 0,
+    },
+  );
   await metaMask.snaps.dialog.accept();
   const res = (await resPromise) as any;
   const signedDeploy = DeployUtil.deployFromJson(res.deploy).val;
@@ -66,48 +68,6 @@ async function testDeploy(
     signedDeploy as DeployUtil.Deploy,
   ).ok;
   expect(validateDeploy).toEqual(true);
-}
-
-/**
- * Dzdqzdzqdqzdzdqqzdqzd q.
- *
- * @param page - Adqd.
- * @param snapId - Adqd.
- * @param method - Adqd.
- * @param params - Adqd.
- */
-async function invokeSnap2<R = unknown, P extends Serializable = Serializable>(
-  page: DappeteerPage,
-  snapId: string,
-  method: string,
-  params?: P,
-): ReturnType<typeof window.ethereum.request<R>> {
-  flaskOnly(page);
-
-  const result = await page.evaluate(
-    async (opts: { snapId: string; method: string; params?: P }) => {
-      try {
-        return await window.ethereum.request<R>({
-          method: 'wallet_invokeSnap',
-          params: {
-            request: {
-              method: opts.method,
-              params: opts.params,
-            },
-            snapId: opts.snapId,
-          },
-        });
-      } catch (e) {
-        return e as Error;
-      }
-    },
-    { snapId, method, params },
-  );
-  if (result instanceof Error || isMetaMaskErrorObject(result)) {
-    throw result;
-  } else {
-    return result;
-  }
 }
 
 describe('snap', function () {
@@ -122,7 +82,6 @@ describe('snap', function () {
       snapIdOrLocation: '.',
       headless: true,
       metaMaskFlask: true,
-      metaMaskVersion: 'v10.29.0',
     }));
 
     connectedPage = await metaMask.page.browser().newPage();
@@ -134,7 +93,7 @@ describe('snap', function () {
   });
 
   test('Getting an account without params should be the same key as 0.', async function () {
-    const resultPromise = invokeSnap2(
+    const resultPromise = metaMask.snaps.invokeSnap(
       connectedPage,
       snapId,
       'casper_getAccount',
@@ -144,7 +103,7 @@ describe('snap', function () {
       CLPublicKey.fromHex(result.publicKey).toHex(),
     );
     expect(result).toBeTruthy();
-    const resultPromiseWithParam = invokeSnap2(
+    const resultPromiseWithParam = metaMask.snaps.invokeSnap(
       connectedPage,
       snapId,
       'casper_getAccount',
@@ -160,7 +119,7 @@ describe('snap', function () {
     expect(resultWithParam).toBeTruthy();
     expect(resultWithParam.publicKey).toEqual(result.publicKey);
 
-    const resultPromiseOther = invokeSnap2(
+    const resultPromiseOther = metaMask.snaps.invokeSnap(
       connectedPage,
       snapId,
       'casper_getAccount',
@@ -178,9 +137,14 @@ describe('snap', function () {
 
   test('Getting a account with a negative index should cause an error', async function () {
     try {
-      await invokeSnap2(connectedPage, snapId, 'casper_getAccount', {
-        addressIndex: -1,
-      });
+      await metaMask.snaps.invokeSnap(
+        connectedPage,
+        snapId,
+        'casper_getAccount',
+        {
+          addressIndex: -1,
+        },
+      );
     } catch (e) {
       expect(e.message).toContain(
         'Invalid BIP-32 index: Must be a non-negative integer',
@@ -190,9 +154,14 @@ describe('snap', function () {
 
   test('Getting a account with something else than a number should cause an error', async function () {
     try {
-      await invokeSnap2(connectedPage, snapId, 'casper_getAccount', {
-        addressIndex: 'qfqzdfqzd',
-      });
+      await metaMask.snaps.invokeSnap(
+        connectedPage,
+        snapId,
+        'casper_getAccount',
+        {
+          addressIndex: 'qfqzdfqzd',
+        },
+      );
     } catch (e) {
       expect(e.message).toContain(
         'Invalid BIP-32 index: Must be a non-negative integer',
@@ -209,7 +178,7 @@ describe('snap', function () {
     }
 
     try {
-      await invokeSnap2(connectedPage, snapId, 'casper_sign', {
+      await metaMask.snaps.invokeSnap(connectedPage, snapId, 'casper_sign', {
         addressIndex: 0,
       });
       fail('it should not reach here');
@@ -218,7 +187,7 @@ describe('snap', function () {
     }
 
     try {
-      await invokeSnap2(connectedPage, snapId, 'casper_sign', {
+      await metaMask.snaps.invokeSnap(connectedPage, snapId, 'casper_sign', {
         addressIndex: -1,
       });
       fail('it should not reach here');
@@ -229,7 +198,7 @@ describe('snap', function () {
     }
 
     try {
-      await invokeSnap2(connectedPage, snapId, 'casper_sign', {
+      await metaMask.snaps.invokeSnap(connectedPage, snapId, 'casper_sign', {
         deployJson: -1,
         addressIndex: -1,
       });
@@ -241,7 +210,7 @@ describe('snap', function () {
     }
 
     try {
-      await invokeSnap2(connectedPage, snapId, 'casper_sign', {
+      await metaMask.snaps.invokeSnap(connectedPage, snapId, 'casper_sign', {
         deployJson: '-1',
         addressIndex: -1,
       });
@@ -252,18 +221,28 @@ describe('snap', function () {
       );
     }
     let res;
-    res = await invokeSnap2(connectedPage, snapId, 'casper_sign', {
-      deployJson: -1,
-    });
+    res = await metaMask.snaps.invokeSnap(
+      connectedPage,
+      snapId,
+      'casper_sign',
+      {
+        deployJson: -1,
+      },
+    );
 
     expect((res as any).error).toEqual(
       'Unable to convert json into deploy object.',
     );
 
-    res = await invokeSnap2(connectedPage, snapId, 'casper_sign', {
-      deployJson: '-1',
-      addressIndex: 0,
-    });
+    res = await metaMask.snaps.invokeSnap(
+      connectedPage,
+      snapId,
+      'casper_sign',
+      {
+        deployJson: '-1',
+        addressIndex: 0,
+      },
+    );
 
     expect((res as any).error).toEqual(
       'Unable to convert json into deploy object.',
@@ -271,23 +250,28 @@ describe('snap', function () {
   });
 
   test('Rejecting a signing popup should return false', async function () {
-    const result = (await invokeSnap2(
+    const result = (await metaMask.snaps.invokeSnap(
       connectedPage,
       snapId,
       'casper_getAccount',
     )) as any;
     const deploy = DeployUtil.deployToJson(fakeTransfer(result.publicKey));
-    const resPromise = invokeSnap2(connectedPage, snapId, 'casper_sign', {
-      deployJson: deploy as unknown as string,
-      addressIndex: 0,
-    });
+    const resPromise = metaMask.snaps.invokeSnap(
+      connectedPage,
+      snapId,
+      'casper_sign',
+      {
+        deployJson: deploy as unknown as string,
+        addressIndex: 0,
+      },
+    );
     await metaMask.snaps.dialog.reject();
     const res = await resPromise;
     expect(res).toEqual(false);
   });
 
   test('Accepting a signing popup for a transfer should succeed', async function () {
-    const result = (await invokeSnap2(
+    const result = (await metaMask.snaps.invokeSnap(
       connectedPage,
       snapId,
       'casper_getAccount',
@@ -302,7 +286,7 @@ describe('snap', function () {
   });
 
   test('Accepting a signing popup for a transfer with optional transfer id should succeed', async function () {
-    const result = (await invokeSnap2(
+    const result = (await metaMask.snaps.invokeSnap(
       connectedPage,
       snapId,
       'casper_getAccount',
@@ -320,7 +304,7 @@ describe('snap', function () {
   });
 
   test('Accepting a signing popup for a module bytes deploy should succeed', async function () {
-    const result = (await invokeSnap2(
+    const result = (await metaMask.snaps.invokeSnap(
       connectedPage,
       snapId,
       'casper_getAccount',
@@ -335,7 +319,7 @@ describe('snap', function () {
   });
 
   test('Accepting a signing popup for a stored contract by name deploy should succeed', async function () {
-    const result = (await invokeSnap2(
+    const result = (await metaMask.snaps.invokeSnap(
       connectedPage,
       snapId,
       'casper_getAccount',
@@ -352,7 +336,7 @@ describe('snap', function () {
   });
 
   test('Accepting a signing popup for a stored contract by hash deploy should succeed', async function () {
-    const result = (await invokeSnap2(
+    const result = (await metaMask.snaps.invokeSnap(
       connectedPage,
       snapId,
       'casper_getAccount',
@@ -369,7 +353,7 @@ describe('snap', function () {
   });
 
   test('Accepting a signing popup for a stored version contract by name deploy should succeed', async function () {
-    const result = (await invokeSnap2(
+    const result = (await metaMask.snaps.invokeSnap(
       connectedPage,
       snapId,
       'casper_getAccount',
@@ -386,7 +370,7 @@ describe('snap', function () {
   });
 
   test('Accepting a signing popup for a stored version contract by hash deploy should succeed', async function () {
-    const result = (await invokeSnap2(
+    const result = (await metaMask.snaps.invokeSnap(
       connectedPage,
       snapId,
       'casper_getAccount',
@@ -404,7 +388,7 @@ describe('snap', function () {
 
   test('snap invoke should error on non supported method', async function () {
     try {
-      await invokeSnap2(connectedPage, snapId, 'invalid');
+      await metaMask.snaps.invokeSnap(connectedPage, snapId, 'invalid');
     } catch (e) {
       expect(e.message).toContain('Method not found.');
     }
