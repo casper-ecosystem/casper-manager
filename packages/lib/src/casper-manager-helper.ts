@@ -87,7 +87,7 @@ async function signMessage(message: string, options: any = {}) {
     params: {
       snapId: options.snapID ?? SNAP_ID,
       request: {
-        method: 'casper_sign_message',
+        method: 'casper_signMessage',
         params: {
           addressIndex: options.addressIndex,
           message,
