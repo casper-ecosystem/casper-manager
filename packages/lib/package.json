@@ -21,13 +21,13 @@
     "test": "exit 0"
   },
   "dependencies": {
-    "@metamask/providers": "^10.2.1",
-    "buffer": "^5.7.1",
-    "casper-js-sdk": "^2.11.1"
+    "@metamask/providers": "10.2.1",
+    "buffer": "5.7.1",
+    "casper-js-sdk": "2.13.1"
   },
   "devDependencies": {
-    "esdoc-typescript-plugin": "^1.0.1",
-    "release-it": "^15.10.3",
-    "typedoc": "^0.23.28"
+    "esdoc-typescript-plugin": "1.0.1",
+    "release-it": "15.10.3",
+    "typedoc": "0.23.28"
   }
 }

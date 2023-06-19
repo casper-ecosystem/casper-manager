@@ -7,7 +7,7 @@
     "url": "https://github.com/casperholders/casper-snap.git"
   },
   "source": {
-    "shasum": "YNRQ0YxEkeqTvklKSQdIh3G5iVYTwi5W/DQ2U1SOKjs=",
+    "shasum": "2nDpcd8rITcdazrUKOwqXyKxuHf4gC5Hbwqe4NQ2AD0=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

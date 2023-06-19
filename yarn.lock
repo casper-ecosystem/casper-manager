@@ -1481,6 +1481,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/types@npm:7.22.0, @babel/types@npm:^7.18.6, @babel/types@npm:^7.18.7, @babel/types@npm:^7.18.9, @babel/types@npm:^7.20.0, @babel/types@npm:^7.20.5, @babel/types@npm:^7.21.0, @babel/types@npm:^7.21.4, @babel/types@npm:^7.21.5, @babel/types@npm:^7.22.0, @babel/types@npm:^7.4.4, @babel/types@npm:^7.8.3":
+  version: 7.22.0
+  resolution: "@babel/types@npm:7.22.0"
+  dependencies:
+    "@babel/helper-string-parser": ^7.21.5
+    "@babel/helper-validator-identifier": ^7.19.1
+    to-fast-properties: ^2.0.0
+  checksum: 6ba43536f362170d1be58aa8f975210fc042729128e9db286c7a107a1ca3e096994ad741e1cda85b2ae10d02e363d189f826ceee6178a884cc638935c99e2003
+  languageName: node
+  linkType: hard
+
 "@babel/types@npm:^7.0.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.22.3, @babel/types@npm:^7.3.3":
   version: 7.22.3
   resolution: "@babel/types@npm:7.22.3"
@@ -1489,17 +1500,6 @@ __metadata:
     "@babel/helper-validator-identifier": ^7.19.1
     to-fast-properties: ^2.0.0
   checksum: 6111fa5990635dfba8812a84bb4889429feb41a2c03c89de2654724e88a85b5740d4795c64a480d188d2f7109e7b47f3f0ba3d56da1b697cd31c65922f4decf7
-  languageName: node
-  linkType: hard
-
-"@babel/types@npm:^7.18.6, @babel/types@npm:^7.18.7, @babel/types@npm:^7.18.9, @babel/types@npm:^7.20.0, @babel/types@npm:^7.20.5, @babel/types@npm:^7.21.0, @babel/types@npm:^7.21.4, @babel/types@npm:^7.21.5, @babel/types@npm:^7.22.0, @babel/types@npm:^7.4.4, @babel/types@npm:^7.8.3":
-  version: 7.22.0
-  resolution: "@babel/types@npm:7.22.0"
-  dependencies:
-    "@babel/helper-string-parser": ^7.21.5
-    "@babel/helper-validator-identifier": ^7.19.1
-    to-fast-properties: ^2.0.0
-  checksum: 6ba43536f362170d1be58aa8f975210fc042729128e9db286c7a107a1ca3e096994ad741e1cda85b2ae10d02e363d189f826ceee6178a884cc638935c99e2003
   languageName: node
   linkType: hard
 
@@ -1514,12 +1514,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@casperholders/casper-manager-helper@workspace:packages/lib"
   dependencies:
-    "@metamask/providers": ^10.2.1
-    buffer: ^5.7.1
-    casper-js-sdk: ^2.11.1
-    esdoc-typescript-plugin: ^1.0.1
-    release-it: ^15.10.3
-    typedoc: ^0.23.28
+    "@metamask/providers": 10.2.1
+    buffer: 5.7.1
+    casper-js-sdk: 2.13.1
+    esdoc-typescript-plugin: 1.0.1
+    release-it: 15.10.3
+    typedoc: 0.23.28
   languageName: unknown
   linkType: soft
 
@@ -1528,38 +1528,38 @@ __metadata:
   resolution: "@casperholders/casper-manager@workspace:packages/snap"
   dependencies:
     "@chainsafe/dappeteer": 5.2.0
-    "@ethersproject/bignumber": ^5.7.0
-    "@lavamoat/allow-scripts": ^2.0.3
-    "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^10.0.0
-    "@metamask/eslint-config-jest": ^10.0.0
-    "@metamask/eslint-config-nodejs": ^10.0.0
-    "@metamask/eslint-config-typescript": ^10.0.0
-    "@metamask/key-tree": ^6.2.1
-    "@metamask/snaps-cli": ^0.32.2
-    "@metamask/snaps-types": ^0.32.2
-    "@metamask/snaps-ui": ^0.32.2
-    "@types/jest": ^29.5.1
-    "@typescript-eslint/eslint-plugin": ^5.33.0
-    "@typescript-eslint/parser": ^5.33.0
-    casper-js-sdk: ^2.13.0
-    eslint: ^8.21.0
-    eslint-config-prettier: ^8.1.0
-    eslint-plugin-import: ^2.26.0
-    eslint-plugin-jest: ^26.8.2
-    eslint-plugin-jsdoc: ^39.2.9
-    eslint-plugin-node: ^11.1.0
-    eslint-plugin-prettier: ^4.2.1
-    ethereum-cryptography: ^1.2.0
-    jest: ^29.5.0
-    playwright: ^1.34.3
-    prettier: ^2.2.1
-    prettier-plugin-packagejson: ^2.2.11
-    release-it: ^15.10.3
-    rimraf: ^3.0.2
-    ts-results: "npm:@casperlabs/ts-results@^3.3.4"
-    tweetnacl-ts: ^1.0.3
-    typescript: ^4.7.4
+    "@ethersproject/bignumber": 5.7.0
+    "@lavamoat/allow-scripts": 2.3.1
+    "@metamask/auto-changelog": 2.6.1
+    "@metamask/eslint-config": 10.0.0
+    "@metamask/eslint-config-jest": 10.0.0
+    "@metamask/eslint-config-nodejs": 10.0.0
+    "@metamask/eslint-config-typescript": 10.0.0
+    "@metamask/key-tree": 6.2.1
+    "@metamask/snaps-cli": 0.32.2
+    "@metamask/snaps-types": 0.32.2
+    "@metamask/snaps-ui": 0.32.2
+    "@types/jest": 29.5.1
+    "@typescript-eslint/eslint-plugin": 5.59.7
+    "@typescript-eslint/parser": 5.59.7
+    casper-js-sdk: 2.13.0
+    eslint: 8.42.0
+    eslint-config-prettier: 8.8.0
+    eslint-plugin-import: 2.27.5
+    eslint-plugin-jest: 26.9.0
+    eslint-plugin-jsdoc: 39.9.1
+    eslint-plugin-node: 11.1.0
+    eslint-plugin-prettier: 4.2.1
+    ethereum-cryptography: 1.2.0
+    jest: 29.5.0
+    playwright: 1.34.3
+    prettier: 2.8.8
+    prettier-plugin-packagejson: 2.4.3
+    release-it: 15.10.3
+    rimraf: 3.0.2
+    ts-results: "npm:@casperlabs/ts-results@3.3.5"
+    tweetnacl-ts: 1.0.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -1876,7 +1876,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/bignumber@npm:^5.0.8, @ethersproject/bignumber@npm:^5.7.0":
+"@ethersproject/bignumber@npm:5.7.0, @ethersproject/bignumber@npm:^5.0.8, @ethersproject/bignumber@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/bignumber@npm:5.7.0"
   dependencies:
@@ -2272,7 +2272,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/allow-scripts@npm:^2.0.3":
+"@lavamoat/allow-scripts@npm:2.3.1":
   version: 2.3.1
   resolution: "@lavamoat/allow-scripts@npm:2.3.1"
   dependencies:
@@ -2307,7 +2307,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/auto-changelog@npm:^2.6.0":
+"@metamask/auto-changelog@npm:2.6.1":
   version: 2.6.1
   resolution: "@metamask/auto-changelog@npm:2.6.1"
   dependencies:
@@ -2353,7 +2353,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eslint-config-jest@npm:^10.0.0":
+"@metamask/eslint-config-jest@npm:10.0.0":
   version: 10.0.0
   resolution: "@metamask/eslint-config-jest@npm:10.0.0"
   peerDependencies:
@@ -2364,7 +2364,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eslint-config-nodejs@npm:^10.0.0":
+"@metamask/eslint-config-nodejs@npm:10.0.0":
   version: 10.0.0
   resolution: "@metamask/eslint-config-nodejs@npm:10.0.0"
   peerDependencies:
@@ -2375,7 +2375,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eslint-config-typescript@npm:^10.0.0":
+"@metamask/eslint-config-typescript@npm:10.0.0":
   version: 10.0.0
   resolution: "@metamask/eslint-config-typescript@npm:10.0.0"
   peerDependencies:
@@ -2388,7 +2388,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eslint-config@npm:^10.0.0":
+"@metamask/eslint-config@npm:10.0.0":
   version: 10.0.0
   resolution: "@metamask/eslint-config@npm:10.0.0"
   peerDependencies:
@@ -2402,7 +2402,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/key-tree@npm:^6.2.1":
+"@metamask/key-tree@npm:6.2.1":
   version: 6.2.1
   resolution: "@metamask/key-tree@npm:6.2.1"
   dependencies:
@@ -2461,7 +2461,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/providers@npm:^10.2.0, @metamask/providers@npm:^10.2.1":
+"@metamask/providers@npm:10.2.1, @metamask/providers@npm:^10.2.0, @metamask/providers@npm:^10.2.1":
   version: 10.2.1
   resolution: "@metamask/providers@npm:10.2.1"
   dependencies:
@@ -2541,27 +2541,27 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/snap-box@workspace:."
   dependencies:
-    "@metamask/eslint-config": ^10.0.0
-    "@metamask/eslint-config-jest": ^10.0.0
-    "@metamask/eslint-config-nodejs": ^10.0.0
-    "@metamask/eslint-config-typescript": ^10.0.0
-    "@playwright/test": ^1.34.3
-    "@types/isomorphic-fetch": ^0.0.36
-    "@types/jest": ^29.5.1
-    "@typescript-eslint/eslint-plugin": ^5.33.0
-    "@typescript-eslint/parser": ^5.33.0
-    eslint: ^8.21.0
-    eslint-config-prettier: ^8.1.0
-    eslint-plugin-import: ^2.26.0
-    eslint-plugin-jest: ^26.8.2
-    eslint-plugin-jsdoc: ^39.2.9
-    eslint-plugin-node: ^11.1.0
-    eslint-plugin-prettier: ^4.2.1
-    jest: ^29.5.0
-    prettier: ^2.2.1
-    prettier-plugin-packagejson: ^2.2.18
-    ts-jest: ^29.1.0
-    typescript: ^4.7.4
+    "@metamask/eslint-config": 10.0.0
+    "@metamask/eslint-config-jest": 10.0.0
+    "@metamask/eslint-config-nodejs": 10.0.0
+    "@metamask/eslint-config-typescript": 10.0.0
+    "@playwright/test": 1.34.3
+    "@types/isomorphic-fetch": 0.0.36
+    "@types/jest": 29.5.1
+    "@typescript-eslint/eslint-plugin": 5.59.7
+    "@typescript-eslint/parser": 5.59.7
+    eslint: 8.41.0
+    eslint-config-prettier: 8.8.0
+    eslint-plugin-import: 2.27.5
+    eslint-plugin-jest: 26.9.0
+    eslint-plugin-jsdoc: 39.9.1
+    eslint-plugin-node: 11.1.0
+    eslint-plugin-prettier: 4.2.1
+    jest: 29.5.0
+    prettier: 2.8.8
+    prettier-plugin-packagejson: 2.4.3
+    ts-jest: 29.1.0
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -2575,7 +2575,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-cli@npm:^0.32.2":
+"@metamask/snaps-cli@npm:0.32.2":
   version: 0.32.2
   resolution: "@metamask/snaps-cli@npm:0.32.2"
   dependencies:
@@ -2616,7 +2616,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-types@npm:^0.32.2":
+"@metamask/snaps-types@npm:0.32.2":
   version: 0.32.2
   resolution: "@metamask/snaps-types@npm:0.32.2"
   dependencies:
@@ -2628,7 +2628,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-ui@npm:^0.32.2":
+"@metamask/snaps-ui@npm:0.32.2, @metamask/snaps-ui@npm:^0.32.2":
   version: 0.32.2
   resolution: "@metamask/snaps-ui@npm:0.32.2"
   dependencies:
@@ -2982,7 +2982,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.34.3":
+"@playwright/test@npm:1.34.3":
   version: 1.34.3
   resolution: "@playwright/test@npm:1.34.3"
   dependencies:
@@ -3262,7 +3262,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/isomorphic-fetch@npm:^0.0.36":
+"@types/isomorphic-fetch@npm:0.0.36":
   version: 0.0.36
   resolution: "@types/isomorphic-fetch@npm:0.0.36"
   checksum: 1ffaa1c97a019b1f7a682e2ae31bd4cc3f324198b422c62cece51b42d2750e0dde0c4df2320a52874d6c6019ee4b00ca2e736010d34b206a82e63ef82ef85bbe
@@ -3294,7 +3294,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^29.5.1":
+"@types/jest@npm:29.5.1":
   version: 29.5.1
   resolution: "@types/jest@npm:29.5.1"
   dependencies:
@@ -3371,7 +3371,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/webfontloader@npm:^1.6.35":
+"@types/webfontloader@npm:1.6.35":
   version: 1.6.35
   resolution: "@types/webfontloader@npm:1.6.35"
   checksum: 8a809e1f8041fc9f7ec1df82d6e841bfc51732a3aa0b56a4e3d2abab86a8abce1b0db90dc9d2c594fd0d77034e2670cae3cfb714a902a0112985fa04fd4a61c8
@@ -3403,7 +3403,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^5.33.0":
+"@typescript-eslint/eslint-plugin@npm:5.59.7":
   version: 5.59.7
   resolution: "@typescript-eslint/eslint-plugin@npm:5.59.7"
   dependencies:
@@ -3451,7 +3451,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.33.0":
+"@typescript-eslint/parser@npm:5.59.7":
   version: 5.59.7
   resolution: "@typescript-eslint/parser@npm:5.59.7"
   dependencies:
@@ -3645,7 +3645,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitejs/plugin-vue@npm:^3.2.0":
+"@vitejs/plugin-vue@npm:3.2.0":
   version: 3.2.0
   resolution: "@vitejs/plugin-vue@npm:3.2.0"
   peerDependencies:
@@ -3739,7 +3739,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/eslint-config-typescript@npm:^11.0.0":
+"@vue/eslint-config-typescript@npm:11.0.3":
   version: 11.0.3
   resolution: "@vue/eslint-config-typescript@npm:11.0.3"
   dependencies:
@@ -4725,7 +4725,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"buffer@npm:^5.7.1":
+"buffer@npm:5.7.1":
   version: 5.7.1
   resolution: "buffer@npm:5.7.1"
   dependencies:
@@ -4894,7 +4894,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"casper-js-sdk@npm:^2.11.1, casper-js-sdk@npm:^2.13.0":
+"casper-js-sdk@npm:2.13.0":
   version: 2.13.0
   resolution: "casper-js-sdk@npm:2.13.0"
   dependencies:
@@ -4919,7 +4919,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"casper-js-sdk@npm:^2.13.1":
+"casper-js-sdk@npm:2.13.1":
   version: 2.13.1
   resolution: "casper-js-sdk@npm:2.13.1"
   dependencies:
@@ -6076,7 +6076,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esdoc-typescript-plugin@npm:^1.0.1":
+"esdoc-typescript-plugin@npm:1.0.1":
   version: 1.0.1
   resolution: "esdoc-typescript-plugin@npm:1.0.1"
   dependencies:
@@ -6085,7 +6085,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^8.1.0":
+"eslint-config-prettier@npm:8.8.0":
   version: 8.8.0
   resolution: "eslint-config-prettier@npm:8.8.0"
   peerDependencies:
@@ -6131,7 +6131,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-import@npm:^2.26.0":
+"eslint-plugin-import@npm:2.27.5":
   version: 2.27.5
   resolution: "eslint-plugin-import@npm:2.27.5"
   dependencies:
@@ -6156,7 +6156,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:^26.8.2":
+"eslint-plugin-jest@npm:26.9.0":
   version: 26.9.0
   resolution: "eslint-plugin-jest@npm:26.9.0"
   dependencies:
@@ -6173,7 +6173,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jsdoc@npm:^39.2.9":
+"eslint-plugin-jsdoc@npm:39.9.1":
   version: 39.9.1
   resolution: "eslint-plugin-jsdoc@npm:39.9.1"
   dependencies:
@@ -6190,7 +6190,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-node@npm:^11.1.0":
+"eslint-plugin-node@npm:11.1.0":
   version: 11.1.0
   resolution: "eslint-plugin-node@npm:11.1.0"
   dependencies:
@@ -6206,7 +6206,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:^4.2.1":
+"eslint-plugin-prettier@npm:4.2.1":
   version: 4.2.1
   resolution: "eslint-plugin-prettier@npm:4.2.1"
   dependencies:
@@ -6221,7 +6221,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-vue@npm:^9.0.0":
+"eslint-plugin-vue@npm:9.14.1":
   version: 9.14.1
   resolution: "eslint-plugin-vue@npm:9.14.1"
   dependencies:
@@ -6281,56 +6281,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.0.0":
-  version: 8.42.0
-  resolution: "eslint@npm:8.42.0"
-  dependencies:
-    "@eslint-community/eslint-utils": ^4.2.0
-    "@eslint-community/regexpp": ^4.4.0
-    "@eslint/eslintrc": ^2.0.3
-    "@eslint/js": 8.42.0
-    "@humanwhocodes/config-array": ^0.11.10
-    "@humanwhocodes/module-importer": ^1.0.1
-    "@nodelib/fs.walk": ^1.2.8
-    ajv: ^6.10.0
-    chalk: ^4.0.0
-    cross-spawn: ^7.0.2
-    debug: ^4.3.2
-    doctrine: ^3.0.0
-    escape-string-regexp: ^4.0.0
-    eslint-scope: ^7.2.0
-    eslint-visitor-keys: ^3.4.1
-    espree: ^9.5.2
-    esquery: ^1.4.2
-    esutils: ^2.0.2
-    fast-deep-equal: ^3.1.3
-    file-entry-cache: ^6.0.1
-    find-up: ^5.0.0
-    glob-parent: ^6.0.2
-    globals: ^13.19.0
-    graphemer: ^1.4.0
-    ignore: ^5.2.0
-    import-fresh: ^3.0.0
-    imurmurhash: ^0.1.4
-    is-glob: ^4.0.0
-    is-path-inside: ^3.0.3
-    js-yaml: ^4.1.0
-    json-stable-stringify-without-jsonify: ^1.0.1
-    levn: ^0.4.1
-    lodash.merge: ^4.6.2
-    minimatch: ^3.1.2
-    natural-compare: ^1.4.0
-    optionator: ^0.9.1
-    strip-ansi: ^6.0.1
-    strip-json-comments: ^3.1.0
-    text-table: ^0.2.0
-  bin:
-    eslint: bin/eslint.js
-  checksum: 07105397b5f2ff4064b983b8971e8c379ec04b1dfcc9d918976b3e00377189000161dac991d82ba14f8759e466091b8c71146f602930ca810c290ee3fcb3faf0
-  languageName: node
-  linkType: hard
-
-"eslint@npm:^8.21.0":
+"eslint@npm:8.41.0":
   version: 8.41.0
   resolution: "eslint@npm:8.41.0"
   dependencies:
@@ -6376,6 +6327,55 @@ __metadata:
   bin:
     eslint: bin/eslint.js
   checksum: 09979a6f8451dcc508a7005b6670845c8a518376280b3fd96657a406b8b6ef29d0e480d1ba11b4eb48da93d607e0c55c9b877676fe089d09973ec152354e23b2
+  languageName: node
+  linkType: hard
+
+"eslint@npm:8.42.0":
+  version: 8.42.0
+  resolution: "eslint@npm:8.42.0"
+  dependencies:
+    "@eslint-community/eslint-utils": ^4.2.0
+    "@eslint-community/regexpp": ^4.4.0
+    "@eslint/eslintrc": ^2.0.3
+    "@eslint/js": 8.42.0
+    "@humanwhocodes/config-array": ^0.11.10
+    "@humanwhocodes/module-importer": ^1.0.1
+    "@nodelib/fs.walk": ^1.2.8
+    ajv: ^6.10.0
+    chalk: ^4.0.0
+    cross-spawn: ^7.0.2
+    debug: ^4.3.2
+    doctrine: ^3.0.0
+    escape-string-regexp: ^4.0.0
+    eslint-scope: ^7.2.0
+    eslint-visitor-keys: ^3.4.1
+    espree: ^9.5.2
+    esquery: ^1.4.2
+    esutils: ^2.0.2
+    fast-deep-equal: ^3.1.3
+    file-entry-cache: ^6.0.1
+    find-up: ^5.0.0
+    glob-parent: ^6.0.2
+    globals: ^13.19.0
+    graphemer: ^1.4.0
+    ignore: ^5.2.0
+    import-fresh: ^3.0.0
+    imurmurhash: ^0.1.4
+    is-glob: ^4.0.0
+    is-path-inside: ^3.0.3
+    js-yaml: ^4.1.0
+    json-stable-stringify-without-jsonify: ^1.0.1
+    levn: ^0.4.1
+    lodash.merge: ^4.6.2
+    minimatch: ^3.1.2
+    natural-compare: ^1.4.0
+    optionator: ^0.9.1
+    strip-ansi: ^6.0.1
+    strip-json-comments: ^3.1.0
+    text-table: ^0.2.0
+  bin:
+    eslint: bin/eslint.js
+  checksum: 07105397b5f2ff4064b983b8971e8c379ec04b1dfcc9d918976b3e00377189000161dac991d82ba14f8759e466091b8c71146f602930ca810c290ee3fcb3faf0
   languageName: node
   linkType: hard
 
@@ -6465,6 +6465,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ethereum-cryptography@npm:1.2.0":
+  version: 1.2.0
+  resolution: "ethereum-cryptography@npm:1.2.0"
+  dependencies:
+    "@noble/hashes": 1.2.0
+    "@noble/secp256k1": 1.7.1
+    "@scure/bip32": 1.1.5
+    "@scure/bip39": 1.1.1
+  checksum: 97e8e8253cb9f5a9271bd0201c37609c451c890eb85883b9c564f14743c3d7c673287406c93bf5604307593ee298ad9a03983388b85c11ca61461b9fc1a4f2c7
+  languageName: node
+  linkType: hard
+
 "ethereum-cryptography@npm:^0.1.3":
   version: 0.1.3
   resolution: "ethereum-cryptography@npm:0.1.3"
@@ -6485,18 +6497,6 @@ __metadata:
     secp256k1: ^4.0.1
     setimmediate: ^1.0.5
   checksum: 54bae7a4a96bd81398cdc35c91cfcc74339f71a95ed1b5b694663782e69e8e3afd21357de3b8bac9ff4877fd6f043601e200a7ad9133d94be6fd7d898ee0a449
-  languageName: node
-  linkType: hard
-
-"ethereum-cryptography@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "ethereum-cryptography@npm:1.2.0"
-  dependencies:
-    "@noble/hashes": 1.2.0
-    "@noble/secp256k1": 1.7.1
-    "@scure/bip32": 1.1.5
-    "@scure/bip39": 1.1.1
-  checksum: 97e8e8253cb9f5a9271bd0201c37609c451c890eb85883b9c564f14743c3d7c673287406c93bf5604307593ee298ad9a03983388b85c11ca61461b9fc1a4f2c7
   languageName: node
   linkType: hard
 
@@ -8605,7 +8605,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest@npm:^29.5.0":
+"jest@npm:29.5.0":
   version: 29.5.0
   resolution: "jest@npm:29.5.0"
   dependencies:
@@ -10100,7 +10100,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pinia@npm:^2.0.23":
+"pinia@npm:2.1.3":
   version: 2.1.3
   resolution: "pinia@npm:2.1.3"
   dependencies:
@@ -10144,7 +10144,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.34.3":
+"playwright@npm:1.34.3":
   version: 1.34.3
   resolution: "playwright@npm:1.34.3"
   dependencies:
@@ -10199,7 +10199,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier-plugin-packagejson@npm:^2.2.11, prettier-plugin-packagejson@npm:^2.2.18":
+"prettier-plugin-packagejson@npm:2.4.3":
   version: 2.4.3
   resolution: "prettier-plugin-packagejson@npm:2.4.3"
   dependencies:
@@ -10214,7 +10214,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.2.1":
+"prettier@npm:2.8.8":
   version: 2.8.8
   resolution: "prettier@npm:2.8.8"
   bin:
@@ -10663,7 +10663,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"release-it@npm:^15.10.3":
+"release-it@npm:15.10.3":
   version: 15.10.3
   resolution: "release-it@npm:15.10.3"
   dependencies:
@@ -10817,7 +10817,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rimraf@npm:^3.0.2":
+"rimraf@npm:3.0.2, rimraf@npm:^3.0.2":
   version: 3.0.2
   resolution: "rimraf@npm:3.0.2"
   dependencies:
@@ -10849,7 +10849,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"roboto-fontface@npm:*":
+"roboto-fontface@npm:0.10.0":
   version: 0.10.0
   resolution: "roboto-fontface@npm:0.10.0"
   checksum: 58749bb49133974aa72d79ab1928d5d0aa1df162daab7398cbceeadc1508d222054d2e81d41ab548361a785c5cd2da97159544c3acecc8a180030c91b504be3b
@@ -11167,24 +11167,24 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "site@workspace:packages/site"
   dependencies:
-    "@babel/types": ^7.21.4
+    "@babel/types": 7.22.0
     "@mdi/font": 7.0.96
-    "@types/webfontloader": ^1.6.35
-    "@vitejs/plugin-vue": ^3.2.0
-    "@vue/eslint-config-typescript": ^11.0.0
-    casper-js-sdk: ^2.13.1
-    eslint: ^8.0.0
-    eslint-plugin-vue: ^9.0.0
-    pinia: ^2.0.23
-    roboto-fontface: "*"
-    typescript: ^5.0.0
-    vite: ^4.2.0
-    vite-plugin-vuetify: ^1.0.0
-    vue: ^3.2.0
-    vue-router: ^4.0.0
-    vue-tsc: ^1.2.0
-    vuetify: ^3.0.0
-    webfontloader: ^1.0.0
+    "@types/webfontloader": 1.6.35
+    "@vitejs/plugin-vue": 3.2.0
+    "@vue/eslint-config-typescript": 11.0.3
+    casper-js-sdk: 2.13.1
+    eslint: 8.42.0
+    eslint-plugin-vue: 9.14.1
+    pinia: 2.1.3
+    roboto-fontface: 0.10.0
+    typescript: 5.1.3
+    vite: 4.3.9
+    vite-plugin-vuetify: 1.0.2
+    vue: 3.3.4
+    vue-router: 4.2.2
+    vue-tsc: 1.7.8
+    vuetify: 3.3.3
+    webfontloader: 1.6.28
   languageName: unknown
   linkType: soft
 
@@ -11766,7 +11766,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:^29.1.0":
+"ts-jest@npm:29.1.0":
   version: 29.1.0
   resolution: "ts-jest@npm:29.1.0"
   dependencies:
@@ -11799,7 +11799,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-results@npm:@casperlabs/ts-results@^3.3.4":
+"ts-results@npm:@casperlabs/ts-results@3.3.5, ts-results@npm:@casperlabs/ts-results@^3.3.4":
   version: 3.3.5
   resolution: "@casperlabs/ts-results@npm:3.3.5"
   dependencies:
@@ -11852,7 +11852,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tweetnacl-ts@npm:^1.0.3":
+"tweetnacl-ts@npm:1.0.3":
   version: 1.0.3
   resolution: "tweetnacl-ts@npm:1.0.3"
   dependencies:
@@ -11957,7 +11957,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc@npm:^0.23.28":
+"typedoc@npm:0.23.28":
   version: 0.23.28
   resolution: "typedoc@npm:0.23.28"
   dependencies:
@@ -11973,6 +11973,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:4.9.5":
+  version: 4.9.5
+  resolution: "typescript@npm:4.9.5"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: ee000bc26848147ad423b581bd250075662a354d84f0e06eb76d3b892328d8d4440b7487b5a83e851b12b255f55d71835b008a66cbf8f255a11e4400159237db
+  languageName: node
+  linkType: hard
+
+"typescript@npm:5.1.3":
+  version: 5.1.3
+  resolution: "typescript@npm:5.1.3"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: d9d51862d98efa46534f2800a1071a613751b1585dc78884807d0c179bcd93d6e9d4012a508e276742f5f33c480adefc52ffcafaf9e0e00ab641a14cde9a31c7
+  languageName: node
+  linkType: hard
+
 "typescript@npm:^2.8.3":
   version: 2.9.2
   resolution: "typescript@npm:2.9.2"
@@ -11983,23 +12003,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.7.4":
+"typescript@patch:typescript@4.9.5#~builtin<compat/typescript>":
   version: 4.9.5
-  resolution: "typescript@npm:4.9.5"
+  resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=7ad353"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: ee000bc26848147ad423b581bd250075662a354d84f0e06eb76d3b892328d8d4440b7487b5a83e851b12b255f55d71835b008a66cbf8f255a11e4400159237db
+  checksum: 2eee5c37cad4390385db5db5a8e81470e42e8f1401b0358d7390095d6f681b410f2c4a0c496c6ff9ebd775423c7785cdace7bcdad76c7bee283df3d9718c0f20
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.0.0":
+"typescript@patch:typescript@5.1.3#~builtin<compat/typescript>":
   version: 5.1.3
-  resolution: "typescript@npm:5.1.3"
+  resolution: "typescript@patch:typescript@npm%3A5.1.3#~builtin<compat/typescript>::version=5.1.3&hash=7ad353"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: d9d51862d98efa46534f2800a1071a613751b1585dc78884807d0c179bcd93d6e9d4012a508e276742f5f33c480adefc52ffcafaf9e0e00ab641a14cde9a31c7
+  checksum: 32a25b2e128a4616f999d4ee502aabb1525d5647bc8955e6edf05d7fbc53af8aa98252e2f6ba80bcedfc0260c982b885f3c09cfac8bb65d2924f3133ad1e1e62
   languageName: node
   linkType: hard
 
@@ -12010,26 +12030,6 @@ __metadata:
     tsc: ./bin/tsc
     tsserver: ./bin/tsserver
   checksum: 8e4b4eceecd9c4c0d45a74e49d715eb7b12e0d4a12768b70681c9a81a7c2a335f15fe14c78dddda73c90f9ebb5ddac0b2e33c12df606c7d46f7e7829326cc653
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@^4.7.4#~builtin<compat/typescript>":
-  version: 4.9.5
-  resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=7ad353"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 2eee5c37cad4390385db5db5a8e81470e42e8f1401b0358d7390095d6f681b410f2c4a0c496c6ff9ebd775423c7785cdace7bcdad76c7bee283df3d9718c0f20
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@^5.0.0#~builtin<compat/typescript>":
-  version: 5.1.3
-  resolution: "typescript@patch:typescript@npm%3A5.1.3#~builtin<compat/typescript>::version=5.1.3&hash=7ad353"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 32a25b2e128a4616f999d4ee502aabb1525d5647bc8955e6edf05d7fbc53af8aa98252e2f6ba80bcedfc0260c982b885f3c09cfac8bb65d2924f3133ad1e1e62
   languageName: node
   linkType: hard
 
@@ -12280,7 +12280,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-plugin-vuetify@npm:^1.0.0":
+"vite-plugin-vuetify@npm:1.0.2":
   version: 1.0.2
   resolution: "vite-plugin-vuetify@npm:1.0.2"
   dependencies:
@@ -12294,7 +12294,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^4.2.0":
+"vite@npm:4.3.9":
   version: 4.3.9
   resolution: "vite@npm:4.3.9"
   dependencies:
@@ -12397,7 +12397,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-router@npm:^4.0.0":
+"vue-router@npm:4.2.2":
   version: 4.2.2
   resolution: "vue-router@npm:4.2.2"
   dependencies:
@@ -12418,7 +12418,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-tsc@npm:^1.2.0":
+"vue-tsc@npm:1.7.8":
   version: 1.7.8
   resolution: "vue-tsc@npm:1.7.8"
   dependencies:
@@ -12433,7 +12433,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue@npm:^3.2.0":
+"vue@npm:3.3.4":
   version: 3.3.4
   resolution: "vue@npm:3.3.4"
   dependencies:
@@ -12446,7 +12446,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vuetify@npm:^3.0.0":
+"vuetify@npm:3.3.3":
   version: 3.3.3
   resolution: "vuetify@npm:3.3.3"
   peerDependencies:
@@ -12518,7 +12518,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webfontloader@npm:^1.0.0":
+"webfontloader@npm:1.6.28":
   version: 1.6.28
   resolution: "webfontloader@npm:1.6.28"
   checksum: cbebbe593cb0d27dbb4d418f7f96bd9893024f1f2062e858af76209b6524e25d766964b6e2a724f3b694fadef661dd3a01065455a96df05337b3281ca09ab656
