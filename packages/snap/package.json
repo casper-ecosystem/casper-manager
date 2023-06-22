@@ -31,7 +31,7 @@
     "@ethersproject/bignumber": "5.7.0",
     "@metamask/key-tree": "6.2.1",
     "@metamask/snaps-ui": "0.32.2",
-    "casper-js-sdk": "2.13.0",
+    "casper-js-sdk": "2.13.2",
     "ethereum-cryptography": "1.2.0",
     "tweetnacl-ts": "1.0.3"
   },

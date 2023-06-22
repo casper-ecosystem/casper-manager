@@ -1516,7 +1516,7 @@ __metadata:
   dependencies:
     "@metamask/providers": 10.2.1
     buffer: 5.7.1
-    casper-js-sdk: 2.13.1
+    casper-js-sdk: 2.13.2
     esdoc-typescript-plugin: 1.0.1
     release-it: 15.10.3
     typedoc: 0.23.28
@@ -1542,7 +1542,7 @@ __metadata:
     "@types/jest": 29.5.1
     "@typescript-eslint/eslint-plugin": 5.59.7
     "@typescript-eslint/parser": 5.59.7
-    casper-js-sdk: 2.13.0
+    casper-js-sdk: 2.13.2
     eslint: 8.42.0
     eslint-config-prettier: 8.8.0
     eslint-plugin-import: 2.27.5
@@ -4894,34 +4894,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"casper-js-sdk@npm:2.13.0":
-  version: 2.13.0
-  resolution: "casper-js-sdk@npm:2.13.0"
-  dependencies:
-    "@ethersproject/bignumber": ^5.0.8
-    "@ethersproject/bytes": ^5.0.5
-    "@ethersproject/constants": ^5.0.5
-    "@noble/ed25519": ^1.7.3
-    "@noble/hashes": ^1.2.0
-    "@noble/secp256k1": ^1.7.1
-    "@open-rpc/client-js": ^1.6.2
-    "@scure/bip32": ^1.1.5
-    "@scure/bip39": ^1.2.0
-    "@types/ws": ^8.2.2
-    glob: ^7.1.6
-    humanize-duration: ^3.24.0
-    key-encoder: ^2.0.3
-    lodash: ^4.17.21
-    reflect-metadata: ^0.1.13
-    ts-results: "npm:@casperlabs/ts-results@^3.3.4"
-    typedjson: ^1.6.0-rc2
-  checksum: cb75289d9dd877c89b72f84c80fc01799aed4cc6cfadbbc15c015c364978991c3aa37fe778e88a54e9e0c1c3238fda4647cdfa8b4bca52ae6df6d6032d8f2e3a
-  languageName: node
-  linkType: hard
-
-"casper-js-sdk@npm:2.13.1":
-  version: 2.13.1
-  resolution: "casper-js-sdk@npm:2.13.1"
+"casper-js-sdk@npm:2.13.2":
+  version: 2.13.2
+  resolution: "casper-js-sdk@npm:2.13.2"
   dependencies:
     "@ethersproject/bignumber": ^5.0.8
     "@ethersproject/bytes": ^5.0.5
@@ -4941,7 +4916,7 @@ __metadata:
     reflect-metadata: ^0.1.13
     ts-results: "npm:@casperlabs/ts-results@^3.3.4"
     typedjson: ^1.6.0-rc2
-  checksum: e4454a1ec2d2d3bedebf62ba78ec5cf4fa1ee12f34d15dddfdd696c45c14010adea5c24a4e1ef62b630464b8e55b38d36adf678ac87ab0786816af08dba28400
+  checksum: 427d358a4ffe60c451959573315d3a733160a054adfaa1f40461cc5d04cc321fafba950bea6277fbce54a1382c8536da045382d60a3bb86916d56b183189bef9
   languageName: node
   linkType: hard
 
@@ -11172,7 +11147,7 @@ __metadata:
     "@types/webfontloader": 1.6.35
     "@vitejs/plugin-vue": 3.2.0
     "@vue/eslint-config-typescript": 11.0.3
-    casper-js-sdk: 2.13.1
+    casper-js-sdk: 2.13.2
     eslint: 8.42.0
     eslint-plugin-vue: 9.14.1
     pinia: 2.1.3

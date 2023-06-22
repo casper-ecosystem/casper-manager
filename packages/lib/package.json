@@ -23,7 +23,7 @@
   "dependencies": {
     "@metamask/providers": "10.2.1",
     "buffer": "5.7.1",
-    "casper-js-sdk": "2.13.1"
+    "casper-js-sdk": "2.13.2"
   },
   "devDependencies": {
     "esdoc-typescript-plugin": "1.0.1",
