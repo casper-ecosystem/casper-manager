@@ -1,1 +1,1 @@
-export const SNAP_ID = 'npm:@casperholders/casper-manager';
+export const SNAP_ID = 'npm:casper-manager';

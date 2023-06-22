@@ -2,7 +2,7 @@
 
 Snap to enable MetaMask users interaction with [Casper](https://docs.casperlabs.io/) dapps.
 
-For detailed documentation and integration instructions see our [helper](https://casperholders.github.io/casper-snap/).
+For detailed documentation and integration instructions see our [helper](https://casper-ecosystem.github.io/casper-manager/).
 
 ## RPC Methods
 

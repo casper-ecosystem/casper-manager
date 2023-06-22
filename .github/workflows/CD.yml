@@ -34,7 +34,6 @@ jobs:
         with:
           node-version: 18
           registry-url: 'https://registry.npmjs.org'
-          scope: '@casperholders'
 
       - run: yarn install --immutable
       - run: yarn build

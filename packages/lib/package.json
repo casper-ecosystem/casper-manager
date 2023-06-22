@@ -1,5 +1,5 @@
 {
-  "name": "@casperholders/casper-manager-helper",
+  "name": "casper-manager-helper",
   "version": "1.0.6",
   "description": "Simple helper to use the casper manager",
   "main": "dist/index.js",
@@ -29,6 +29,7 @@
     "esdoc-typescript-plugin": "1.0.1",
     "release-it": "15.11.0",
     "typedoc": "0.24.8",
-    "typedoc-plugin-missing-exports": "2.0.0"
+    "typedoc-plugin-missing-exports": "2.0.0",
+    "typescript": "5.1.3"
   }
 }
