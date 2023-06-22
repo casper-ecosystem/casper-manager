@@ -1,5 +1,6 @@
 /*
  * Window type extension to support ethereum
+ *
  */
 
 import { MetaMaskInpageProvider } from '@metamask/providers';

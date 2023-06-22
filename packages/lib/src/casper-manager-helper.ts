@@ -1,16 +1,17 @@
 import { CLPublicKey, DeployUtil } from 'casper-js-sdk';
+
+import { SNAP_ID } from './constants';
 import {
   GetSnapCasperAccount,
   GetSnapCasperSign,
   GetSnapCasperSignMessage,
 } from './types';
-import { SNAP_ID } from './constants';
 
 /**
  * Get a Casper Account from the snap.
- *
  * @param addressIndex - Address index wanted. Default to 0.
  * @param snapId - ID of the snap. Default to the npm lib.
+ * @returns CLPublicKey - Public key object.
  */
 async function getAccount(addressIndex = 0, snapId = SNAP_ID) {
   const response = (await window.ethereum.request({
@@ -35,7 +36,6 @@ async function getAccount(addressIndex = 0, snapId = SNAP_ID) {
  * Sign a given Deploy Object with the corresponding public key.
  * You must pass the active public key from the user and the public key
  * where the deploy is going to be used.
- *
  * @param deploy - Deploy object.
  * @param options - Options object.
  * @returns Signed deploy object.
@@ -65,7 +65,7 @@ async function signDeploy(deploy: DeployUtil.Deploy, options: any = {}) {
       if (validatedSignedDeploy.ok) {
         return validatedSignedDeploy.val;
       }
-      throw validatedSignedDeploy.val;
+      throw new Error(validatedSignedDeploy.val);
     }
     throw signedDeploy.val;
   }
@@ -76,7 +76,6 @@ async function signDeploy(deploy: DeployUtil.Deploy, options: any = {}) {
  * Sign a given string message with the corresponding public key.
  * You must pass the active public key from the user and the public key
  * where the deploy is going to be used.
- *
  * @param message - String message.
  * @param options - Options object.
  * @returns Message signature.

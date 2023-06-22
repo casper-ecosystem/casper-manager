@@ -8,7 +8,9 @@ module.exports = {
   },
 
   extends: ['@metamask/eslint-config'],
-
+  rules: {
+    'jsdoc/newline-after-description': 'off',
+  },
   overrides: [
     {
       files: ['**/*.js'],

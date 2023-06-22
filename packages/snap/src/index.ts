@@ -1,19 +1,20 @@
-import { OnRpcRequestHandler } from '@metamask/snaps-types';
 import { getBIP44AddressKeyDeriver } from '@metamask/key-tree';
-import * as nacl from 'tweetnacl-ts';
-import { sha256 } from 'ethereum-cryptography/sha256';
-import { ecdsaSign } from 'ethereum-cryptography/secp256k1-compat';
+import { OnRpcRequestHandler } from '@metamask/snaps-types';
 import { copyable, heading, NodeType, panel, text } from '@metamask/snaps-ui';
 import { CLPublicKey, DeployUtil, Keys } from 'casper-js-sdk';
+import { ecdsaSign } from 'ethereum-cryptography/secp256k1-compat';
+import { sha256 } from 'ethereum-cryptography/sha256';
+import * as nacl from 'tweetnacl-ts';
+
 import { addSignatureAndValidateDeploy, deployToObject } from './utils';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires,import/no-extraneous-dependencies
+// eslint-disable-next-line
 globalThis.Buffer = require('buffer/').Buffer;
 
 /**
  * Get casper address.
- *
  * @param addressIndex - Address index.
+ * @returns Object - Either contains a publicKey string or error string.
  */
 async function getCSPRAddress(addressIndex = 0) {
   const bip44Node = await snap.request({
@@ -42,13 +43,14 @@ async function getCSPRAddress(addressIndex = 0) {
     };
   }
   return {
-    error: `Unsupported curve. Received ${addressKey.curve}. Only Secp256K1 && Ed25519 are supported.`,
+    error: `Unsupported curve. Received ${
+      addressKey.curve as string
+    }. Only Secp256K1 && Ed25519 are supported.`,
   };
 }
 
 /**
  * Displays a prompt to the user in the MetaMask UI.
- *
  * @param deploy - Deploy object that will be parsed to display the content of if.
  * @param signingKey - Hex encoded public key address.
  * @returns `true` if the user accepted the confirmation,
@@ -65,7 +67,7 @@ async function promptUserDeployInfo(
   }[] = [];
   Object.entries(deployInfo.deployArgs).forEach((arg: any) => {
     if (Array.isArray(arg[1])) {
-      const value = arg[1].map((v: any) => copyable(v));
+      const value = arg[1].map((val: any) => copyable(val));
       deployArgComponents.push(text(arg[0]), ...value);
     } else {
       deployArgComponents.push(text(arg[0]), copyable(arg[1]));
@@ -101,9 +103,9 @@ async function promptUserDeployInfo(
 
 /**
  * Sign a deploy.
- *
  * @param deployJson - JSON formatted deploy.
  * @param addressIndex - Address index.
+ * @returns Object - Either an object with a deploy json string or error string.
  */
 async function sign(deployJson: string, addressIndex = 0) {
   const publicKeyHex = (await getCSPRAddress(addressIndex)).publicKey;
@@ -146,7 +148,9 @@ async function sign(deployJson: string, addressIndex = 0) {
       return addSignatureAndValidateDeploy(deploy.val, signature, publicKeyHex);
     }
     return {
-      error: `Unsupported curve : ${addressKey.curve}. Only Secp256K1 && Ed25519 are supported.`,
+      error: `Unsupported curve : ${
+        addressKey.curve as string
+      }. Only Secp256K1 && Ed25519 are supported.`,
     };
   }
   return {
@@ -156,11 +160,11 @@ async function sign(deployJson: string, addressIndex = 0) {
 
 /**
  * Sign a message.
- *
- * @param msg - Message.
+ * @param message - Message.
  * @param addressIndex - Address index.
+ * @returns Object - Either an object with a signature string or error string.
  */
-async function signMessage(msg: string, addressIndex = 0) {
+async function signMessage(message: string, addressIndex = 0) {
   const bip44Node = await snap.request({
     method: 'snap_getBip44Entropy',
     params: {
@@ -169,12 +173,18 @@ async function signMessage(msg: string, addressIndex = 0) {
   });
   const bip44Nodeaddr = await getBIP44AddressKeyDeriver(bip44Node);
   const addressKey0 = await bip44Nodeaddr(addressIndex);
-  const message = Uint8Array.from(Buffer.from(`Casper Message:\n${msg}`));
+  const messageBytes = Uint8Array.from(
+    Buffer.from(`Casper Message:\n${message}`),
+  );
   const response = await snap.request({
     method: 'snap_dialog',
     params: {
       type: 'confirmation',
-      content: panel([heading(`Sign message`), text('Message'), copyable(msg)]),
+      content: panel([
+        heading(`Sign message`),
+        text('Message'),
+        copyable(message),
+      ]),
     },
   });
 
@@ -186,17 +196,19 @@ async function signMessage(msg: string, addressIndex = 0) {
     if (addressKey0.curve === 'ed25519') {
       return {
         signature: Buffer.from(
-          nacl.sign_detached(message, addressKey0.privateKeyBytes),
+          nacl.sign_detached(messageBytes, addressKey0.privateKeyBytes),
         ).toString('hex'),
       };
     }
 
     if (addressKey0.curve === 'secp256k1') {
-      const res = ecdsaSign(sha256(message), addressKey0.privateKeyBytes);
+      const res = ecdsaSign(sha256(messageBytes), addressKey0.privateKeyBytes);
       return { signature: Buffer.from(res.signature).toString('hex') };
     }
     return {
-      error: `Unsupported curve : ${addressKey0.curve}. Only Secp256K1 && Ed25519 are supported.`,
+      error: `Unsupported curve : ${
+        addressKey0.curve as string
+      }. Only Secp256K1 && Ed25519 are supported.`,
     };
   }
   return { error: 'No private key associated with the account.' };
@@ -204,7 +216,6 @@ async function signMessage(msg: string, addressIndex = 0) {
 
 /**
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
- *
  * @param args - The request handler args as object.
  * @param args.origin - The origin of the request, e.g., the website that
  * invoked the snap.

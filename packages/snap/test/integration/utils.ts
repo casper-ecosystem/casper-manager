@@ -27,7 +27,6 @@ import {
   DeployUtil,
   RuntimeArgs,
 } from 'casper-js-sdk';
-
 import { Err, None, Ok, Some } from 'ts-results';
 
 const clbool = new CLBool(false);
@@ -53,6 +52,7 @@ const optionNone = new CLOption(None, new CLBoolType());
 const optionSome = new CLOption(Some(new CLString('test')), new CLStringType());
 const list = new CLList([clstring]);
 const bytearray = new CLByteArray(new Uint8Array([21, 31]));
+// eslint-disable-next-line id-denylist
 const myTypes = { ok: new CLBoolType(), err: new CLU8Type() };
 const myOkRes = new CLResult(Ok(new CLBool(true)), myTypes);
 const myErrRes = new CLResult(Err(new CLU8(1)), myTypes);
@@ -97,7 +97,6 @@ const CLValues = {
 
 /**
  * Fake transfer.
- *
  * @param pk - Public key hex.
  * @returns A deploy.
  */
@@ -118,7 +117,6 @@ function fakeTransfer(pk: string) {
 
 /**
  * Fake transfer with optional ID.
- *
  * @param pk - Public key hex.
  * @returns A deploy.
  */
@@ -137,7 +135,6 @@ function fakeTransferWithOptionalTransferId(pk: string) {
 
 /**
  * Fake module bytes deploy.
- *
  * @param pk - Public key hex.
  * @returns A deploy.
  */
@@ -154,7 +151,6 @@ function fakeModuleBytes(pk: string) {
 
 /**
  * Fake stored contract by name deploy.
- *
  * @param pk - Public key hex.
  * @returns A deploy.
  */
@@ -172,7 +168,6 @@ function fakeStoredContractByName(pk: string) {
 
 /**
  * Fake stored contract by hash deploy.
- *
  * @param pk - Public key hex.
  * @returns A deploy.
  */
@@ -190,7 +185,6 @@ function fakeStoredContractByHash(pk: string) {
 
 /**
  * Fake stored version contract by name deploy.
- *
  * @param pk - Public key hex.
  * @returns A deploy.
  */
@@ -209,7 +203,6 @@ function fakeStoredVersionContractByName(pk: string) {
 
 /**
  * Fake stored version contract by hash deploy.
- *
  * @param pk - Public key hex.
  * @returns A deploy.
  */

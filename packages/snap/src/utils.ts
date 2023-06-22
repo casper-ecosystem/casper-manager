@@ -1,4 +1,5 @@
 /* eslint-disable no-case-declarations */
+import { FixedNumber } from '@ethersproject/bignumber';
 import {
   CLAccountHash,
   CLKey,
@@ -11,11 +12,9 @@ import {
   DeployUtil,
   encodeBase16,
 } from 'casper-js-sdk';
-import { FixedNumber } from '@ethersproject/bignumber';
 
 /**
  * Sanitise nested lists.
- *
  * @param value - A value from a list.
  * @returns Sanitised value.
  */
@@ -23,14 +22,13 @@ function sanitiseNestedLists(value: any) {
   const parsedValue = parseDeployArg(value);
   if (Array.isArray(parsedValue)) {
     const parsedType = value.vectorType;
-    return `<${parsedType}>[...]`;
+    return `<${parsedType as string}>[...]`;
   }
   return parsedValue;
 }
 
 /**
  * Parse a deploy argument.
- *
  * @param arg - A CLValue argument from a deploy.
  * @returns Parsed argument to a human-readable string.
  */
@@ -115,7 +113,6 @@ function parseDeployArg(arg: CLValue): string {
 
 /**
  * Verify target account hash.
- *
  * @param publicKeyHex - Public key hex string.
  * @param targetAccountHash - Target account hash string.
  */
@@ -136,7 +133,6 @@ function verifyTargetAccountMatch(
 
 /**
  * Parse a transfer deploy.
- *
  * @param transferDeploy - A transfer deploy from the casper js sdk.
  * @param providedTarget - Provided target.
  * @returns An object formatted for Metamask Casper Snap.
@@ -192,7 +188,7 @@ function parseTransferData(
   const id = parseDeployArg(transferDeploy?.getArgByName('id') as CLValue);
 
   transferArgs.Amount = `${convertMotesToCasper(amount.toString())} CSPR`;
-  transferArgs.Motes = `${amount.toString()}`;
+  transferArgs.Motes = `${amount.toString() as string}`;
   transferArgs['Transfer ID'] = id;
 
   return transferArgs;
@@ -200,7 +196,6 @@ function parseTransferData(
 
 /**
  * Convert motes to casper.
- *
  * @param motesAmount - Amount in motes.
  * @returns Amount in string.
  */
@@ -209,15 +204,14 @@ function convertMotesToCasper(motesAmount: string) {
     return FixedNumber.from(motesAmount)
       .divUnsafe(FixedNumber.from(1000000000))
       .toString();
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
     return '0';
   }
 }
 
 /**
  * Parse a deploy into an object.
- *
  * @param deploy - Deploy from the Casper JS SDK.
  * @param signingKey - Signing Key in the Hex format.
  * @returns Object - Will be used to display information to the user in metamask.
@@ -233,7 +227,7 @@ export function deployToObject(deploy: DeployUtil.Deploy, signingKey: string) {
     ?.getArgByName('amount')
     ?.value();
   const payment = `${convertMotesToCasper(paymentValue)} CSPR`;
-  const paymentMotes = `${paymentValue.toString()}`;
+  const paymentMotes = `${paymentValue.toString() as string}`;
 
   let type;
 
@@ -272,7 +266,7 @@ export function deployToObject(deploy: DeployUtil.Deploy, signingKey: string) {
       storedContract = deploy.session.storedVersionedContractByName;
     } else {
       throw new Error(`Stored Contract could not be parsed.\n\
-          Provided session code: ${deploy.session}`);
+          Provided session code: ${deploy.session as unknown as string}`);
     }
 
     storedContract.args.args.forEach((argument, key) => {
@@ -297,7 +291,6 @@ export function deployToObject(deploy: DeployUtil.Deploy, signingKey: string) {
 
 /**
  * Add a signature to a deploy and validate it.
- *
  * @param deploy - Deploy object.
  * @param signature - Signature bytes.
  * @param publicKeyHex - Public key hex string.

@@ -1,9 +1,8 @@
-import { GetSnapsResponse } from './types';
 import { SNAP_ID } from './constants';
+import { GetSnapsResponse, Snap } from './types';
 
 /**
  * Detect if the wallet injecting the ethereum object is Flask.
- *
  * @returns True if the MetaMask version is Flask, false otherwise.
  */
 const isFlask = async () => {
@@ -24,7 +23,6 @@ const isFlask = async () => {
 
 /**
  * Install the snap.
- *
  * @param snapID - ID of the snap. Default to the npm lib.
  */
 async function installSnap(snapID = SNAP_ID) {
@@ -38,10 +36,10 @@ async function installSnap(snapID = SNAP_ID) {
 
 /**
  * Get the snap.
- *
  * @param snapID - ID of the snap. Default to the npm lib.
+ * @returns Snap - Return the snap.
  */
-async function getSnap(snapID = SNAP_ID) {
+async function getSnap(snapID = SNAP_ID): Promise<undefined | Snap> {
   const snaps = (await window.ethereum.request({
     method: 'wallet_getSnaps',
   })) as unknown as GetSnapsResponse;

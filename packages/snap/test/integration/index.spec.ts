@@ -1,4 +1,3 @@
-import { exec } from 'child_process';
 import {
   Dappeteer,
   DappeteerBrowser,
@@ -6,6 +5,9 @@ import {
   initSnapEnv,
 } from '@chainsafe/dappeteer';
 import { CLPublicKey, DeployUtil } from 'casper-js-sdk';
+// eslint-disable-next-line import/no-nodejs-modules
+import { exec } from 'child_process';
+
 import {
   fakeModuleBytes,
   fakeStoredContractByHash,
@@ -20,7 +22,7 @@ const DAPP_PAGE = 'http://example.org';
 
 /**
  * Build snap.
- *
+ * @returns String - Path to builded snap.
  */
 async function buildSnap(): Promise<string> {
   console.log(`Building my-snap...`);
@@ -39,7 +41,6 @@ async function buildSnap(): Promise<string> {
 
 /**
  * Test a deploy.
- *
  * @param connectedPage - Connected page.
  * @param snapId - Snap ID.
  * @param metaMask - Metamask Instance.
@@ -145,8 +146,8 @@ describe('snap', function () {
           addressIndex: -1,
         },
       );
-    } catch (e) {
-      expect(e.message).toContain(
+    } catch (error) {
+      expect(error.message).toContain(
         'Invalid BIP-32 index: Must be a non-negative integer',
       );
     }
@@ -162,8 +163,8 @@ describe('snap', function () {
           addressIndex: 'qfqzdfqzd',
         },
       );
-    } catch (e) {
-      expect(e.message).toContain(
+    } catch (error) {
+      expect(error.message).toContain(
         'Invalid BIP-32 index: Must be a non-negative integer',
       );
     }
@@ -173,8 +174,8 @@ describe('snap', function () {
     try {
       await metaMask.snaps.invokeSnap(connectedPage, snapId, 'casper_sign');
       fail('it should not reach here');
-    } catch (e) {
-      expect(e.message).toContain('Cannot read properties of undefined');
+    } catch (error) {
+      expect(error.message).toContain('Cannot read properties of undefined');
     }
 
     try {
@@ -182,8 +183,8 @@ describe('snap', function () {
         addressIndex: 0,
       });
       fail('it should not reach here');
-    } catch (e) {
-      expect(e.message).toContain('Cannot read properties of undefined');
+    } catch (error) {
+      expect(error.message).toContain('Cannot read properties of undefined');
     }
 
     try {
@@ -191,8 +192,8 @@ describe('snap', function () {
         addressIndex: -1,
       });
       fail('it should not reach here');
-    } catch (e) {
-      expect(e.message).toContain(
+    } catch (error) {
+      expect(error.message).toContain(
         'Invalid BIP-32 index: Must be a non-negative integer.',
       );
     }
@@ -203,8 +204,8 @@ describe('snap', function () {
         addressIndex: -1,
       });
       fail('it should not reach here');
-    } catch (e) {
-      expect(e.message).toContain(
+    } catch (error) {
+      expect(error.message).toContain(
         'Invalid BIP-32 index: Must be a non-negative integer.',
       );
     }
@@ -215,8 +216,8 @@ describe('snap', function () {
         addressIndex: -1,
       });
       fail('it should not reach here');
-    } catch (e) {
-      expect(e.message).toContain(
+    } catch (error) {
+      expect(error.message).toContain(
         'Invalid BIP-32 index: Must be a non-negative integer.',
       );
     }
@@ -389,8 +390,8 @@ describe('snap', function () {
   test('snap invoke should error on non supported method', async function () {
     try {
       await metaMask.snaps.invokeSnap(connectedPage, snapId, 'invalid');
-    } catch (e) {
-      expect(e.message).toContain('Method not found.');
+    } catch (error) {
+      expect(error.message).toContain('Method not found.');
     }
   });
 });

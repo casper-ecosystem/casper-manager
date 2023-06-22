@@ -12,7 +12,7 @@
     "build": "yarn run build:lib && yarn run build:types",
     "build:lib": "tsc --build",
     "build:types": "tsc --emitDeclarationOnly",
-    "docs": "typedoc",
+    "docs": "typedoc --plugin typedoc-plugin-missing-exports",
     "lint": "yarn run lint:style && yarn run lint:types",
     "lint:style": "eslint --color 'src/**/*.{js,ts,tsx}'",
     "lint:style:fix": "yarn run lint:style --fix",
@@ -21,13 +21,14 @@
     "test": "exit 0"
   },
   "dependencies": {
-    "@metamask/providers": "10.2.1",
-    "buffer": "5.7.1",
+    "@metamask/providers": "11.0.0",
+    "buffer": "6.0.3",
     "casper-js-sdk": "2.13.2"
   },
   "devDependencies": {
     "esdoc-typescript-plugin": "1.0.1",
-    "release-it": "15.10.3",
-    "typedoc": "0.23.28"
+    "release-it": "15.11.0",
+    "typedoc": "0.24.8",
+    "typedoc-plugin-missing-exports": "2.0.0"
   }
 }
