@@ -1,0 +1,17 @@
+{
+  "extends": ["config:base"],
+  "automerge": false,
+  "rangeStrategy": "pin",
+  "baseBranches": ["main", "develop"],
+  "packageRules": [
+    {
+      "packageNames": ["node"],
+      "enabled": false
+    },
+    {
+      "matchUpdateTypes": ["major", "minor"],
+      "matchBaseBranches": ["main"],
+      "enabled": false
+    }
+  ]
+}
