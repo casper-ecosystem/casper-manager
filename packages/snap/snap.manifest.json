@@ -4,15 +4,15 @@
   "proposedName": "Casper Manager",
   "repository": {
     "type": "git",
-    "url": "https://github.com/casperholders/casper-snap.git"
+    "url": "https://github.com/casper-ecosystem/casper-manager.git"
   },
   "source": {
-    "shasum": "2nDpcd8rITcdazrUKOwqXyKxuHf4gC5Hbwqe4NQ2AD0=",
+    "shasum": "xTYK4K+U9AkftpzwOGXBIc6tWi0NH8Uiw0W3fcGowYE=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
         "iconPath": "images/icon.svg",
-        "packageName": "@casperholders/casper-manager",
+        "packageName": "casper-manager",
         "registry": "https://registry.npmjs.org/"
       }
     }

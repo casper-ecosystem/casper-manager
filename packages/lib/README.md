@@ -13,7 +13,7 @@ import {
   isFlask,
   signDeploy,
   signMessage,
-} from '@casperholders/casper-manager-helper';
+} from 'casper-manager-helper';
 import { CLPublicKey, DeployUtil, motesToCSPR } from 'casper-js-sdk';
 
 const flask = await isFlask();

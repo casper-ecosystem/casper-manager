@@ -1,5 +1,5 @@
 {
-  "name": "@casperholders/casper-manager-helper",
+  "name": "casper-manager-helper",
   "version": "1.0.6",
   "description": "Simple helper to use the casper manager",
   "main": "dist/index.js",

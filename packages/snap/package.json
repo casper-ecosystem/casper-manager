@@ -1,10 +1,10 @@
 {
-  "name": "@casperholders/casper-manager",
+  "name": "casper-manager",
   "version": "1.0.6",
   "description": "Sign deploys and messages for the Casper Blockchain with your Casper account(s).",
   "repository": {
     "type": "git",
-    "url": "https://github.com/casperholders/casper-snap.git"
+    "url": "https://github.com/casper-ecosystem/casper-manager.git"
   },
   "license": "Apache-2.0",
   "main": "src/index.ts",
