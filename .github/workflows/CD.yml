@@ -63,7 +63,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TYPE_ARG: ${{ fromJSON('{"auto":"", "patch":"--patch", "minor":"--minor", "major":"--major", "beta":"--preRelease=beta --npm.tag=next", "alpha":"--preRelease=alpha --npm.tag=next"}')[github.event.inputs.type] }}
           DRY_ARG: ${{ github.event.inputs.dry == 'true' && '--dry-run' || '' }}
-        run: cd packages/lib && yarn run release --ci --verbose $TYPE_ARG $DRY_ARG
+        run: cd packages/lib && yarn run release --ci --no-git.requireUpstream --verbose $TYPE_ARG $DRY_ARG
 
       - name: Release snap
         env:
@@ -71,4 +71,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TYPE_ARG: ${{ fromJSON('{"auto":"", "patch":"--patch", "minor":"--minor", "major":"--major", "beta":"--preRelease=beta --npm.tag=next", "alpha":"--preRelease=alpha --npm.tag=next"}')[github.event.inputs.type] }}
           DRY_ARG: ${{ github.event.inputs.dry == 'true' && '--dry-run' || '' }}
-        run: cd packages/snap && yarn run release --ci --verbose $TYPE_ARG $DRY_ARG
+        run: cd packages/snap && yarn run release --ci --no-git.requireUpstream --verbose $TYPE_ARG $DRY_ARG

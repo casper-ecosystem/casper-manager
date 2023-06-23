@@ -105,7 +105,7 @@ async function promptUserDeployInfo(
  * @param deployJson - JSON formatted deploy.
  * @param addressIndex - Address index.
  */
-async function sign(deployJson: string, addressIndex = 0) {
+async function sign(deployJson: object, addressIndex = 0) {
   const publicKeyHex = (await getCSPRAddress(addressIndex)).publicKey;
   if (!publicKeyHex) {
     return { error: `Unable to get public key at index ${addressIndex}.` };
