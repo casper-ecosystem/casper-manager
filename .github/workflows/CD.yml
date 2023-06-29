@@ -38,15 +38,6 @@ jobs:
       - run: yarn install --immutable
       - run: yarn build
 
-      - name: Build helper doc
-        run: cd packages/lib && yarn docs
-
-      - name: Deploy docs
-        if: ${{ github.event.inputs.dry == 'false' }}
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: packages/lib/docs
-
       - name: NPM config
         run: npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
         env:
@@ -57,18 +48,19 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
 
-      - name: Release lib
+      - name: Release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TYPE_ARG: ${{ fromJSON('{"auto":"", "patch":"--patch", "minor":"--minor", "major":"--major", "beta":"--preRelease=beta --npm.tag=next", "alpha":"--preRelease=alpha --npm.tag=next"}')[github.event.inputs.type] }}
           DRY_ARG: ${{ github.event.inputs.dry == 'true' && '--dry-run' || '' }}
-        run: cd packages/lib && yarn run release --ci --no-git.requireUpstream --verbose $TYPE_ARG $DRY_ARG
+        run: yarn run release --ci --no-git.requireUpstream --verbose $TYPE_ARG $DRY_ARG
 
-      - name: Release snap
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TYPE_ARG: ${{ fromJSON('{"auto":"", "patch":"--patch", "minor":"--minor", "major":"--major", "beta":"--preRelease=beta --npm.tag=next", "alpha":"--preRelease=alpha --npm.tag=next"}')[github.event.inputs.type] }}
-          DRY_ARG: ${{ github.event.inputs.dry == 'true' && '--dry-run' || '' }}
-        run: cd packages/snap && yarn run release --ci --no-git.requireUpstream --verbose $TYPE_ARG $DRY_ARG
+      - name: Build helper doc
+        run: cd packages/lib && yarn docs
+
+      - name: Deploy docs
+        if: ${{ github.event.inputs.dry == 'false' }}
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: packages/lib/docs

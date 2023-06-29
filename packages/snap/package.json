@@ -1,6 +1,6 @@
 {
   "name": "casper-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sign deploys and messages for the Casper Blockchain with your Casper account(s).",
   "repository": {
     "type": "git",
@@ -22,7 +22,6 @@
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path .gitignore",
-    "release": "release-it",
     "serve": "mm-snap serve -p 9000",
     "start": "mm-snap watch -p 9000",
     "test": "jest --silent --runInBand"
@@ -59,7 +58,6 @@
     "playwright": "1.34.3",
     "prettier": "2.8.8",
     "prettier-plugin-packagejson": "2.4.3",
-    "release-it": "15.10.3",
     "rimraf": "3.0.2",
     "ts-results": "npm:@casperlabs/ts-results@3.3.5",
     "typescript": "4.9.5"
