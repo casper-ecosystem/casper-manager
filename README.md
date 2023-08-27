@@ -3,6 +3,8 @@
 Snap to enable MetaMask users interaction with [Casper](https://docs.casperlabs.io/) dapps.  
 For detailed documentation and integration instructions see our [helper](https://casper-ecosystem.github.io/casper-manager/).
 
+Read the [FAQ](FAQ.md) and the [Knowledge Base](KnowledgeBase.md).
+
 ## Testing Casper Snap
 
 The snap have been audited by [Halborn](https://www.halborn.com/) on the 20th June 2023.  
