@@ -55,12 +55,3 @@ jobs:
           TYPE_ARG: ${{ fromJSON('{"auto":"", "patch":"--patch", "minor":"--minor", "major":"--major", "beta":"--preRelease=beta --npm.tag=next", "alpha":"--preRelease=alpha --npm.tag=next"}')[github.event.inputs.type] }}
           DRY_ARG: ${{ github.event.inputs.dry == 'true' && '--dry-run' || '' }}
         run: yarn run release --ci --no-git.requireUpstream --verbose $TYPE_ARG $DRY_ARG
-
-      - name: Build helper doc
-        run: cd packages/lib && yarn docs
-
-      - name: Deploy docs
-        if: ${{ github.event.inputs.dry == 'false' }}
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: packages/lib/docs
