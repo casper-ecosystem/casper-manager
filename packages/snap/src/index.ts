@@ -51,12 +51,14 @@ async function getCSPRAddress(addressIndex = 0) {
  *
  * @param deploy - Deploy object that will be parsed to display the content of if.
  * @param signingKey - Hex encoded public key address.
+ * @param origin - Origin of the request.
  * @returns `true` if the user accepted the confirmation,
  * and `false` otherwise.
  */
 async function promptUserDeployInfo(
   deploy: DeployUtil.Deploy,
   signingKey: string,
+  origin: string,
 ) {
   const deployInfo = deployToObject(deploy, signingKey);
   const deployArgComponents: {
@@ -77,6 +79,8 @@ async function promptUserDeployInfo(
       type: 'confirmation',
       content: panel([
         heading(`Sign ${deployInfo.deployType}`),
+        text(`Request origin:`),
+        copyable(`${origin}`),
         text('Deploy Hash'),
         copyable(deployInfo.deployHash),
         text('Signing Key'),
@@ -103,9 +107,10 @@ async function promptUserDeployInfo(
  * Sign a deploy.
  *
  * @param deployJson - JSON formatted deploy.
+ * @param origin - Origin of the request.
  * @param addressIndex - Address index.
  */
-async function sign(deployJson: object, addressIndex = 0) {
+async function sign(deployJson: object, origin: string, addressIndex = 0) {
   const publicKeyHex = (await getCSPRAddress(addressIndex)).publicKey;
   if (!publicKeyHex) {
     return { error: `Unable to get public key at index ${addressIndex}.` };
@@ -124,7 +129,7 @@ async function sign(deployJson: object, addressIndex = 0) {
   const message = Buffer.from(deployHash, 'hex');
   const bip44Nodeaddr = await getBIP44AddressKeyDeriver(bip44Node);
   const addressKey = await bip44Nodeaddr(addressIndex);
-  const response = await promptUserDeployInfo(deploy.val, publicKeyHex);
+  const response = await promptUserDeployInfo(deploy.val, publicKeyHex, origin);
   if (!response) {
     return false;
   }
@@ -158,9 +163,10 @@ async function sign(deployJson: object, addressIndex = 0) {
  * Sign a message.
  *
  * @param msg - Message.
+ * @param origin - Origin of the request.
  * @param addressIndex - Address index.
  */
-async function signMessage(msg: string, addressIndex = 0) {
+async function signMessage(msg: string, origin: string, addressIndex = 0) {
   const bip44Node = await snap.request({
     method: 'snap_getBip44Entropy',
     params: {
@@ -168,13 +174,22 @@ async function signMessage(msg: string, addressIndex = 0) {
     },
   });
   const bip44Nodeaddr = await getBIP44AddressKeyDeriver(bip44Node);
-  const addressKey0 = await bip44Nodeaddr(addressIndex);
+  const addressKey = await bip44Nodeaddr(addressIndex);
   const message = Uint8Array.from(Buffer.from(`Casper Message:\n${msg}`));
+  const publicKeyHex = (await getCSPRAddress(addressIndex)).publicKey;
   const response = await snap.request({
     method: 'snap_dialog',
     params: {
       type: 'confirmation',
-      content: panel([heading(`Sign message`), text('Message'), copyable(msg)]),
+      content: panel([
+        heading(`Sign message`),
+        text(`Request origin:`),
+        copyable(`${origin}`),
+        text('Signing Key'),
+        copyable(publicKeyHex || ''),
+        text('Message'),
+        copyable(msg),
+      ]),
     },
   });
 
@@ -182,21 +197,21 @@ async function signMessage(msg: string, addressIndex = 0) {
     return false;
   }
 
-  if (addressKey0.privateKeyBytes) {
-    if (addressKey0.curve === 'ed25519') {
+  if (addressKey.privateKeyBytes) {
+    if (addressKey.curve === 'ed25519') {
       return {
         signature: Buffer.from(
-          nacl.sign_detached(message, addressKey0.privateKeyBytes),
+          nacl.sign_detached(message, addressKey.privateKeyBytes),
         ).toString('hex'),
       };
     }
 
-    if (addressKey0.curve === 'secp256k1') {
-      const res = ecdsaSign(sha256(message), addressKey0.privateKeyBytes);
+    if (addressKey.curve === 'secp256k1') {
+      const res = ecdsaSign(sha256(message), addressKey.privateKeyBytes);
       return { signature: Buffer.from(res.signature).toString('hex') };
     }
     return {
-      error: `Unsupported curve : ${addressKey0.curve}. Only Secp256K1 && Ed25519 are supported.`,
+      error: `Unsupported curve : ${addressKey.curve}. Only Secp256K1 && Ed25519 are supported.`,
     };
   }
   return { error: 'No private key associated with the account.' };
@@ -222,10 +237,15 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
     case 'casper_getAccount':
       return getCSPRAddress(request?.params?.addressIndex);
     case 'casper_sign':
-      return sign(request?.params?.deployJson, request?.params?.addressIndex);
+      return sign(
+        request?.params?.deployJson,
+        origin,
+        request?.params?.addressIndex,
+      );
     case 'casper_signMessage':
       return signMessage(
         request?.params?.message,
+        origin,
         request?.params?.addressIndex,
       );
     default:
