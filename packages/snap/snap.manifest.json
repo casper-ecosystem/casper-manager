@@ -1,5 +1,5 @@
 {
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Sign deploys and messages for the Casper Blockchain with your Casper account(s).",
   "proposedName": "Casper Manager",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/casper-ecosystem/casper-manager.git"
   },
   "source": {
-    "shasum": "rvDd86U9sZ9ukmZU5arIXZDZmphFUF+9uDxQHQ4u7js=",
+    "shasum": "tV4HOIewc7A1oy9cZlJQ6Qn5ekmJmy3Ek6e0tSiUQsA=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
