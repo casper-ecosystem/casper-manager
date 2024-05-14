@@ -1,12 +1,19 @@
 # FAQ
 
+## How to recover funds if the Snap should ever be decommissioned ?
+
+You can import your Metamask private key in any wallet compatible with Casper. (Like [Casper Wallet](https://www.casperwallet.io/))
+
 ## How to install the Snap ?
 
 Any website/dapps can request you to install the Snap. It's up to them to implement it.
 
 Here's some website that use the Snap at the moment :
 
-- https://testnet.casperholders.io/ - A Casper Dapp to use the features of the network (staking/transfer etc...)
+- https://cspr.live/ - A Casper Network Explorer 
+- https://cspr.market/ - A Casper Network NFT marketplace 
+- https://casperswap.xyz/ - A Casper Network DEX
+- https://casperholders.io/ - A Casper Dapp to use the features of the network (staking/transfer etc...)
 - https://div3.in/ - A Casper Network Explorer
 
 ## How to use Snap's features ? What does the Snap do ?
