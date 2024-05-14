@@ -13,10 +13,8 @@ You can find the code difference between the audit and now [here](https://github
 
 ## Testing Casper Manager Snap
 
-### MetaMask Flask
-
-Snaps is pre-release software available in MetaMask Flask, a canary distribution for developers that provides access to upcoming features.  
-To try Snaps [install MetaMask Flask](https://metamask.io/flask/).
+### MetaMask Snaps Open Beta
+The MetaMask Snaps Open Beta is a first look at what's possible when extending the capabilities of your wallet. We invite those who are comfortable trying new features to test out these Snaps built by talented community developers.
 
 ### Live demo dapp
 
