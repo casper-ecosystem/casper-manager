@@ -1,17 +1,21 @@
 /* eslint-disable no-case-declarations */
+/* eslint-disable no-restricted-globals */
 import {
-  CLAccountHash,
-  CLKey,
-  CLOption,
-  CLPublicKey,
-  CLResult,
-  CLTypeTag,
-  CLURef,
-  CLValue,
-  DeployUtil,
-  encodeBase16,
+  AccountHash,
+  Conversions,
+  TransactionEntryPointEnum,
+  TypeID,
 } from 'casper-js-sdk';
-import { FixedNumber } from '@ethersproject/bignumber';
+import type {
+  CLValue,
+  CLValueByteArray,
+  CLValueList,
+  Key,
+  URef,
+  Transaction,
+  CLValueMap,
+} from 'casper-js-sdk';
+import type { CLValueResult } from 'casper-js-sdk/dist/types/clvalue/Result';
 
 /**
  * Sanitise nested lists.
@@ -23,7 +27,7 @@ function sanitiseNestedLists(value: any) {
   const parsedValue = parseDeployArg(value);
   if (Array.isArray(parsedValue)) {
     const parsedType = value.vectorType;
-    return `<${parsedType}>[...]`;
+    return `<${parsedType as string}>[...]`;
   }
   return parsedValue;
 }
@@ -34,103 +38,78 @@ function sanitiseNestedLists(value: any) {
  * @param arg - A CLValue argument from a deploy.
  * @returns Parsed argument to a human-readable string.
  */
-function parseDeployArg(arg: CLValue): string {
-  const { tag } = arg.clType();
+export function parseDeployArg(arg: unknown): string | any[] {
+  const tag = (arg as CLValue).type.getTypeID();
   switch (tag) {
-    case CLTypeTag.Unit:
+    case TypeID.Unit:
       return String('CLValue Unit');
 
-    case CLTypeTag.Key:
-      const key = arg as CLKey;
-      if (key.isAccount()) {
-        return parseDeployArg(key.value());
+    case TypeID.Key:
+      return ((arg as CLValue).key as Key).toString();
+
+    case TypeID.URef:
+      return ((arg as CLValue).uref as URef).toString();
+
+    case TypeID.Option:
+      const option = arg as CLValue;
+      if (!option.option?.isEmpty()) {
+        return parseDeployArg(option.option?.value());
       }
+      return `${option.toString()} ${option.type?.toString() ?? ''}`;
 
-      if (key.isURef()) {
-        return parseDeployArg(key.value());
-      }
+    case TypeID.List:
+      return ((arg as CLValue).list as CLValueList).elements.map(
+        (member: any) => sanitiseNestedLists(member),
+      );
 
-      if (key.isHash()) {
-        return parseDeployArg(key.value());
-      }
-      throw new Error('Failed to parse key argument');
+    case TypeID.ByteArray:
+      return ((arg as CLValue).byteArray as CLValueByteArray).toString();
 
-    case CLTypeTag.URef:
-      return (arg as CLURef).toFormattedStr();
+    case TypeID.Result:
+      const result = (arg as CLValue).result as CLValueResult;
+      const status = result.isSuccess ? 'OK:' : 'ERR:';
+      const parsed = parseDeployArg(result.value());
+      return `${status} ${parsed as string}`;
 
-    case CLTypeTag.Option:
-      const option = arg as CLOption<any>;
-      if (option.isSome()) {
-        return parseDeployArg(option.value().unwrap());
-      }
-      // This will be None due to the above logic
-      const optionValue = option.value().toString();
-      // This will be the inner CLType of the CLOption e.g. '(bool)'
-      const optionCLType = option.clType().toString().split(' ')[1];
-      // The format ends up looking like `None (bool)`
-      return `${optionValue} ${optionCLType}`;
+    case TypeID.Map:
+      const map = ((arg as CLValue).map as CLValueMap).getData();
+      let mapParsedString = '';
+      map.forEach((tuple) => {
+        mapParsedString += `${parseDeployArg(tuple.value()[0]) as string}=${
+          parseDeployArg(tuple.value()[1]) as string
+        }`;
+      });
+      return mapParsedString;
 
-    case CLTypeTag.List:
-      return arg.value().map((member: any) => sanitiseNestedLists(member));
+    case TypeID.Tuple1:
+      return parseDeployArg((arg as CLValue).tuple1?.value());
 
-    case CLTypeTag.ByteArray:
-      const bytes = arg.value();
-      return encodeBase16(bytes);
+    case TypeID.Tuple2:
+      return (
+        (arg as CLValue).tuple2
+          ?.value()
+          .map((member: any) => sanitiseNestedLists(member)) ?? ''
+      );
 
-    case CLTypeTag.Result:
-      const result = arg as CLResult<any, any>;
-      const status = result.isOk() ? 'OK:' : 'ERR:';
-      const parsed = parseDeployArg(result.value().val);
-      return `${status} ${parsed}`;
+    case TypeID.Tuple3:
+      return (
+        (arg as CLValue).tuple3
+          ?.value()
+          .map((member: any) => sanitiseNestedLists(member)) ?? ''
+      );
 
-    case CLTypeTag.Map:
-      return Array.from(arg.toJSON().entries())
-        .map((member) => {
-          return `${sanitiseNestedLists(
-            (member as any[])[0],
-          )}: ${sanitiseNestedLists((member as any[])[1])}`;
-        })
-        .join(',\n');
+    case TypeID.PublicKey:
+      return (arg as CLValue).publicKey?.toHex() ?? '';
 
-    case CLTypeTag.Tuple1:
-      return parseDeployArg(arg.value()[0]);
-
-    case CLTypeTag.Tuple2:
-      return arg.value().map((member: any) => sanitiseNestedLists(member));
-
-    case CLTypeTag.Tuple3:
-      return arg.value().map((member: any) => sanitiseNestedLists(member));
-
-    case CLTypeTag.PublicKey:
-      return (arg as CLPublicKey).toHex();
+    case TypeID.U32:
+      return (arg as CLValue).ui32?.toNumber().toString() ?? '';
 
     default:
-      // Special handling as there is no CLTypeTag for CLAccountHash
-      if (arg instanceof CLAccountHash) {
-        return encodeBase16(arg.value());
+      // Special handling as there is no TypeID for CLAccountHash
+      if (arg instanceof AccountHash) {
+        return arg.toPrefixedString();
       }
-      return arg.value().toString();
-  }
-}
-
-/**
- * Verify target account hash.
- *
- * @param publicKeyHex - Public key hex string.
- * @param targetAccountHash - Target account hash string.
- */
-function verifyTargetAccountMatch(
-  publicKeyHex: string,
-  targetAccountHash: string,
-) {
-  const providedTargetKeyHash = encodeBase16(
-    CLPublicKey.fromHex(publicKeyHex).toAccountHash(),
-  );
-
-  if (providedTargetKeyHash !== targetAccountHash) {
-    throw new Error(
-      "Provided target public key doesn't match the one in deploy",
-    );
+      return (arg as CLValue).toString();
   }
 }
 
@@ -138,184 +117,150 @@ function verifyTargetAccountMatch(
  * Parse a transfer deploy.
  *
  * @param transferDeploy - A transfer deploy from the casper js sdk.
- * @param providedTarget - Provided target.
  * @returns An object formatted for Metamask Casper Snap.
  */
-function parseTransferData(
-  transferDeploy: DeployUtil.Transfer,
-  providedTarget: string,
-): Record<string, unknown> {
+async function parseTransferData(
+  transferDeploy: Transaction,
+): Promise<Record<string, unknown>> {
   const transferArgs = {} as any;
 
   // Target can either be a hex formatted public key or an account hash
-  const targetFromDeploy = transferDeploy?.getArgByName('target');
-  let targetFromDeployHex;
 
-  switch (targetFromDeploy?.clType().tag) {
-    // If deploy is created using older version of SDK
-    // confirm hash of provided public key matches target account hash from deploy
-    case CLTypeTag.ByteArray: {
-      targetFromDeployHex = encodeBase16(targetFromDeploy.value());
-      // Requester has provided a public key to compare against the target in the deploy
-      if (providedTarget) {
-        const providedTargetLower = providedTarget.toLowerCase();
-        verifyTargetAccountMatch(providedTargetLower, targetFromDeployHex);
-      }
-      transferArgs['Recipient (Hash)'] = targetFromDeployHex;
-      break;
-    }
+  transferArgs.Recipient = transferDeploy.args.args.get('target')?.toString();
 
-    // If deploy is created using version of SDK gte than 2.7.0
-    // In fact this logic can be removed in future as well as pkHex param
-    case CLTypeTag.PublicKey: {
-      targetFromDeployHex = (targetFromDeploy as CLPublicKey).toHex();
-      // Requester has provided a public key to compare against the target in the deploy
-      if (providedTarget) {
-        if (targetFromDeployHex !== providedTarget) {
-          throw new Error(
-            "Provided target public key doesn't match the one in the deploy",
-          );
-        }
-      }
-      transferArgs['Recipient (Key)'] = targetFromDeployHex;
-      break;
-    }
+  const amount = transferDeploy?.args.args.get('amount')?.toString() ?? '';
 
-    default: {
-      throw new Error(
-        'Target from deploy was neither AccountHash or PublicKey',
-      );
-    }
+  const id = transferDeploy?.args.args.get('id')?.toString();
+
+  transferArgs.Amount = `${Conversions.motesToCSPR(amount).toString()} CSPR`;
+  try {
+    const rateResponse = await (
+      await fetch('https://api.mainnet.casperwallet.io/rates/1/amount', {
+        headers: {
+          'Content-Type': 'application/json',
+          Referer: process.env.REFERER,
+        },
+      })
+    ).json();
+    transferArgs['USD Value'] = `${
+      Conversions.motesToCSPR(amount).toNumber() * rateResponse.data.amount
+    }`;
+  } catch (error) {
+    console.warn(error, 'Error while retrieving CSPR Rate.');
   }
-  const amount = transferDeploy?.getArgByName('amount')?.value();
-
-  const id = parseDeployArg(transferDeploy?.getArgByName('id') as CLValue);
-
-  transferArgs.Amount = `${convertMotesToCasper(amount.toString())} CSPR`;
-  transferArgs.Motes = `${amount.toString()}`;
-  transferArgs['Transfer ID'] = id;
+  if (id) {
+    transferArgs['Transfer ID'] = id;
+  }
 
   return transferArgs;
 }
 
 /**
- * Convert motes to casper.
+ * Truncate a string.
  *
- * @param motesAmount - Amount in motes.
- * @returns Amount in string.
+ * @param fullStr - Original string.
+ * @returns Truncated string.
  */
-function convertMotesToCasper(motesAmount: string) {
-  try {
-    return FixedNumber.from(motesAmount)
-      .divUnsafe(FixedNumber.from(1000000000))
-      .toString();
-  } catch (e) {
-    console.log(e);
-    return '0';
+export function truncate(fullStr: string) {
+  if (fullStr.length <= 15) {
+    return fullStr;
   }
+
+  const separator = '...';
+  return (
+    fullStr.substring(0, 5) + separator + fullStr.substring(fullStr.length - 5)
+  );
 }
 
 /**
- * Parse a deploy into an object.
+ * Parse a transaction into an object.
  *
- * @param deploy - Deploy from the Casper JS SDK.
+ * @param transaction - Transaction from the Casper JS SDK.
  * @param signingKey - Signing Key in the Hex format.
  * @returns Object - Will be used to display information to the user in metamask.
  */
-export function deployToObject(deploy: DeployUtil.Deploy, signingKey: string) {
-  const { header } = deploy;
-  const deployAccount = header.account.toHex();
-  if (!deploy.isStandardPayment()) {
-    throw new Error('Signer does not yet support non-standard payment');
-  }
-
-  const paymentValue = deploy.payment.moduleBytes
-    ?.getArgByName('amount')
-    ?.value();
-  const payment = `${convertMotesToCasper(paymentValue)} CSPR`;
-  const paymentMotes = `${paymentValue.toString()}`;
+export async function transactionToObject(
+  transaction: Transaction,
+  signingKey: string,
+) {
+  const deployAccount = transaction.initiatorAddr.publicKey
+    ? transaction.initiatorAddr.publicKey.toHex()
+    : transaction.initiatorAddr.accountHash?.toHex();
 
   let type;
 
-  if (deploy.isTransfer()) {
-    type = 'Transfer';
-  } else if (deploy.session.isModuleBytes()) {
-    type = 'WASM-Based Deploy';
-  } else if (
-    deploy.session.isStoredContractByHash() ||
-    deploy.session.isStoredContractByName()
-  ) {
-    type = 'Contract Call';
-  } else {
-    type = 'Contract Package Call';
+  switch (transaction.entryPoint.type) {
+    case TransactionEntryPointEnum.Transfer:
+      type = 'Transfer';
+      break;
+    case TransactionEntryPointEnum.Call:
+      type = 'Contract Call';
+      break;
+    default:
+      type = 'WASM';
+      break;
   }
 
-  let deployArgs = {} as any;
-  if (deploy.session.transfer) {
-    deployArgs = parseTransferData(
-      deploy.session.transfer,
-      (deploy as any).targetKey,
-    );
-  } else if (deploy.session.moduleBytes) {
-    deploy.session.moduleBytes.args.args.forEach((argument, key) => {
-      deployArgs[key] = parseDeployArg(argument);
-    });
-  } else {
-    let storedContract;
-    if (deploy.session.storedContractByHash) {
-      storedContract = deploy.session.storedContractByHash;
-    } else if (deploy.session.storedContractByName) {
-      storedContract = deploy.session.storedContractByName;
-    } else if (deploy.session.storedVersionedContractByHash) {
-      storedContract = deploy.session.storedVersionedContractByHash;
-    } else if (deploy.session.storedVersionedContractByName) {
-      storedContract = deploy.session.storedVersionedContractByName;
+  const deploy = transaction.getDeploy();
+  const transactionV1 = transaction.getTransactionV1();
+  if (deploy) {
+    let deployArgs = {} as any;
+    if (deploy.session.transfer) {
+      deployArgs = await parseTransferData(transaction);
+    } else if (deploy.session.moduleBytes) {
+      deploy.session.moduleBytes.args.args.forEach((argument, key) => {
+        deployArgs[key] = parseDeployArg(argument);
+      });
     } else {
-      throw new Error(`Stored Contract could not be parsed.\n\
-          Provided session code: ${deploy.session}`);
+      let storedContract;
+      if (deploy.session.storedContractByHash) {
+        storedContract = deploy.session.storedContractByHash;
+      } else if (deploy.session.storedContractByName) {
+        storedContract = deploy.session.storedContractByName;
+      } else if (deploy.session.storedVersionedContractByHash) {
+        storedContract = deploy.session.storedVersionedContractByHash;
+      } else if (deploy.session.storedVersionedContractByName) {
+        storedContract = deploy.session.storedVersionedContractByName;
+      } else {
+        throw new Error(`Stored Contract could not be parsed.\n\
+          Provided session code: ${deploy.session.bytes().toString()}`);
+      }
+
+      storedContract.args.args.forEach((argument, key) => {
+        deployArgs[key] = parseDeployArg(argument);
+      });
+      deployArgs['Entry Point'] = storedContract.entryPoint;
     }
-
-    storedContract.args.args.forEach((argument, key) => {
-      deployArgs[key] = parseDeployArg(argument);
-    });
-    deployArgs['Entry Point'] = storedContract.entryPoint;
+    return {
+      deployHash: transaction.hash.toHex(),
+      signingKey,
+      account: deployAccount,
+      bodyHash: deploy.header.bodyHash?.toHex(),
+      chainName: transaction.chainName,
+      timestamp: new Date(transaction.timestamp.date).toLocaleString(),
+      gasPrice: deploy.header.gasPrice.toString(),
+      deployType: type,
+      deployArgs,
+    };
+  } else if (transactionV1) {
+    let deployArgs = {} as any;
+    if (transaction.entryPoint.type === TransactionEntryPointEnum.Transfer) {
+      deployArgs = await parseTransferData(transaction);
+    } else {
+      transaction.args.args.forEach((argument, key) => {
+        deployArgs[key] = parseDeployArg(argument);
+      });
+    }
+    return {
+      deployHash: transaction.hash.toHex(),
+      signingKey,
+      account: deployAccount,
+      bodyHash: Conversions.encodeBase16(transaction.entryPoint.toBytes()),
+      chainName: transaction.chainName,
+      timestamp: new Date(transaction.timestamp.date).toLocaleString(),
+      deployType: type,
+      deployArgs,
+    };
   }
-  return {
-    deployHash: encodeBase16(deploy.hash),
-    signingKey,
-    account: deployAccount,
-    bodyHash: encodeBase16(header.bodyHash),
-    chainName: header.chainName,
-    timestamp: new Date(header.timestamp).toLocaleString(),
-    gasPrice: header.gasPrice.toString(),
-    payment,
-    paymentMotes,
-    deployType: type,
-    deployArgs,
-  };
-}
-
-/**
- * Add a signature to a deploy and validate it.
- *
- * @param deploy - Deploy object.
- * @param signature - Signature bytes.
- * @param publicKeyHex - Public key hex string.
- * @returns Object - Either an object containing the deploy or an error.
- */
-export function addSignatureAndValidateDeploy(
-  deploy: DeployUtil.Deploy,
-  signature: Uint8Array,
-  publicKeyHex: string,
-) {
-  const signedDeploy = DeployUtil.setSignature(
-    deploy,
-    signature,
-    CLPublicKey.fromHex(publicKeyHex),
-  );
-  const validatedSignedDeploy = DeployUtil.validateDeploy(signedDeploy);
-  if (validatedSignedDeploy.ok) {
-    return { deploy: DeployUtil.deployToJson(validatedSignedDeploy.val) };
-  }
-  return { error: 'Unable to verify deploy after signature.' };
+  throw new Error('Unsupported transaction type');
 }

@@ -1,16 +1,20 @@
-import { CLPublicKey, DeployUtil } from 'casper-js-sdk';
-import {
+/* eslint-disable no-restricted-globals */
+import type { Transaction } from 'casper-js-sdk';
+import { Deploy, PublicKey, TransactionV1 } from 'casper-js-sdk';
+
+import { SNAP_ID } from './constants';
+import type {
   GetSnapCasperAccount,
   GetSnapCasperSign,
   GetSnapCasperSignMessage,
 } from './types';
-import { SNAP_ID } from './constants';
 
 /**
  * Get a Casper Account from the snap.
  *
  * @param addressIndex - Address index wanted. Default to 0.
  * @param snapId - ID of the snap. Default to the npm lib.
+ * @returns A public key or throw an error.
  */
 async function getAccount(addressIndex = 0, snapId = SNAP_ID) {
   const response = (await window.ethereum.request({
@@ -28,7 +32,7 @@ async function getAccount(addressIndex = 0, snapId = SNAP_ID) {
   if (response.error) {
     throw new Error(response.error);
   }
-  return CLPublicKey.fromHex(response.publicKey);
+  return PublicKey.fromHex(response.publicKey);
 }
 
 /**
@@ -40,7 +44,7 @@ async function getAccount(addressIndex = 0, snapId = SNAP_ID) {
  * @param options - Options object.
  * @returns Signed deploy object.
  */
-async function signDeploy(deploy: DeployUtil.Deploy, options: any = {}) {
+async function signDeploy(deploy: Deploy, options: any = {}) {
   const response = (await window.ethereum.request({
     method: 'wallet_invokeSnap',
     params: {
@@ -49,7 +53,7 @@ async function signDeploy(deploy: DeployUtil.Deploy, options: any = {}) {
         method: 'casper_sign',
         params: {
           addressIndex: options.addressIndex,
-          deployJson: DeployUtil.deployToJson(deploy),
+          deployJson: Deploy.toJSON(deploy),
         },
       },
     },
@@ -59,15 +63,50 @@ async function signDeploy(deploy: DeployUtil.Deploy, options: any = {}) {
   }
 
   if (response.deploy) {
-    const signedDeploy = DeployUtil.deployFromJson(response.deploy);
-    if (signedDeploy.ok) {
-      const validatedSignedDeploy = DeployUtil.validateDeploy(signedDeploy.val);
-      if (validatedSignedDeploy.ok) {
-        return validatedSignedDeploy.val;
-      }
-      throw validatedSignedDeploy.val;
+    const signedDeploy = Deploy.fromJSON(response.deploy);
+    if (signedDeploy.validate()) {
+      return signedDeploy;
     }
-    throw signedDeploy.val;
+    throw new Error('Deploy signature validation failed');
+  }
+  throw new Error('Rejected deploy.');
+}
+
+/**
+ * Sign a given Transaction Object with the corresponding public key.
+ * You must pass the active public key from the user and the public key
+ * where the transaction is going to be used.
+ *
+ * @param transaction - Transaction object.
+ * @param options - Options object.
+ * @returns Signed deploy object.
+ */
+async function signTransaction(transaction: Transaction, options: any = {}) {
+  const response = (await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: {
+      snapId: options.snapID ?? SNAP_ID,
+      request: {
+        method: 'casper_sign',
+        params: {
+          addressIndex: options.addressIndex,
+          transaction: TransactionV1.toJSON(
+            transaction.getTransactionV1() as TransactionV1,
+          ),
+        },
+      },
+    },
+  })) as unknown as GetSnapCasperSign;
+  if (response.error) {
+    throw new Error(response.error);
+  }
+
+  if (response.deploy) {
+    const signedTransaction = TransactionV1.fromJSON(response.deploy);
+    if (signedTransaction.validate()) {
+      return signedTransaction;
+    }
+    throw new Error('Transaction signature validation failed');
   }
   throw new Error('Rejected transaction.');
 }
@@ -102,7 +141,7 @@ async function signMessage(message: string, options: any = {}) {
   if (response.signature) {
     return response.signature;
   }
-  throw new Error('Rejected transaction.');
+  throw new Error('Rejected message.');
 }
 
-export { getAccount, signDeploy, signMessage };
+export { getAccount, signDeploy, signTransaction, signMessage };

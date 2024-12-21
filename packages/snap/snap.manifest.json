@@ -1,23 +1,24 @@
 {
-  "version": "1.0.4",
+  "version": "0.1.0",
   "description": "Sign deploys and messages for the Casper Blockchain with your Casper account(s).",
   "proposedName": "Casper Manager",
   "repository": {
     "type": "git",
-    "url": "https://github.com/casper-ecosystem/casper-manager.git"
+    "url": "https://github.com/MetaMask/template-snap-monorepo.git"
   },
   "source": {
-    "shasum": "tV4HOIewc7A1oy9cZlJQ6Qn5ekmJmy3Ek6e0tSiUQsA=",
+    "shasum": "+CcqDaTEo8sQC9br6G8xzdc98M3DgIDZOYem9UZQXao=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
         "iconPath": "images/icon.svg",
-        "packageName": "casper-manager",
+        "packageName": "snap",
         "registry": "https://registry.npmjs.org/"
       }
     }
   },
   "initialPermissions": {
+    "endowment:network-access": {},
     "snap_dialog": {},
     "endowment:rpc": {
       "dapps": true,
@@ -29,5 +30,6 @@
       }
     ]
   },
+  "platformVersion": "6.15.0",
   "manifestVersion": "0.1"
 }

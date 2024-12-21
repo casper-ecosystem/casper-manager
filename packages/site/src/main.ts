@@ -4,17 +4,23 @@
  * Bootstraps Vuetify and other plugins then mounts the App`
  */
 
+/* eslint-disable no-restricted-globals */
+/* eslint-disable import/no-nodejs-modules */
+
 // Components
-import App from './App.vue'
+import { Buffer } from 'buffer';
+import { createApp } from 'vue';
+
+import App from './App.vue';
 
 // Composables
-import { createApp } from 'vue'
-
 // Plugins
-import { registerPlugins } from '@/plugins'
+import { registerPlugins } from '@/plugins';
 
-const app = createApp(App)
+globalThis.Buffer = Buffer;
 
-registerPlugins(app)
+const app = createApp(App);
 
-app.mount('#app')
+registerPlugins(app);
+
+app.mount('#app');
