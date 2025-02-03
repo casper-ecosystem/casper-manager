@@ -188,6 +188,72 @@ const Payment: SnapComponent<PaymentProps> = ({ transaction }) => {
   );
 };
 
+type ContractProps = {
+  transaction: Transaction;
+};
+
+const Contract: SnapComponent<ContractProps> = ({ transaction }) => {
+  if (transaction.target.stored?.id.byHash) {
+    return (
+      <Box>
+        <Text>
+          <Bold>Contract Hash</Bold>
+        </Text>
+        <Text>{transaction.target.stored?.id.byHash.toHex()}</Text>
+      </Box>
+    );
+  }
+  if (transaction.target.stored?.id.byName) {
+    return (
+      <Box>
+        <Text>
+          <Bold>Contract Hash</Bold>
+        </Text>
+        <Text>{transaction.target.stored?.id.byName}</Text>
+      </Box>
+    );
+  }
+  if (transaction.target.stored?.id.byPackageHash) {
+    return (
+      <Box>
+        <Text>
+          <Bold>Contract Package Hash</Bold>
+        </Text>
+        <Text>{transaction.target.stored?.id.byPackageHash.addr.toHex()}</Text>
+        <Text>
+          <Bold>Contract Package Version</Bold>
+        </Text>
+        <Text>
+          {transaction.target.stored?.id.byPackageHash.version?.toString() ??
+            'Latest'}
+        </Text>
+      </Box>
+    );
+  }
+  if (transaction.target.stored?.id.byPackageName) {
+    return (
+      <Box>
+        <Text>
+          <Bold>Contract Package Name</Bold>
+        </Text>
+        <Text>{transaction.target.stored?.id.byPackageName.name}</Text>
+        <Text>
+          <Bold>Contract Package Version</Bold>
+        </Text>
+        <Text>
+          {transaction.target.stored?.id.byPackageName.version?.toString() ??
+            'Latest'}
+        </Text>
+      </Box>
+    );
+  }
+  return (
+    <Box>
+      <Text> </Text>
+    </Box>
+  );
+};
+
 /**
  * Displays a prompt to the user in the MetaMask UI.
  *
@@ -228,6 +294,7 @@ async function promptUserDeployInfo(
               </Box>
             ))}
             <Divider />
+            <Contract transaction={transaction} />
             <Text>
               <Bold>Request origin</Bold>
             </Text>

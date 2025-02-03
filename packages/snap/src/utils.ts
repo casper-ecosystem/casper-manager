@@ -223,7 +223,21 @@ export async function transactionToObject(
       type = 'Cancel Reservations';
       break;
     case TransactionEntryPointEnum.Call:
-      type = 'Contract Call';
+    case TransactionEntryPointEnum.Custom:
+      if (transaction.getDeploy()) {
+        if (transaction.getDeploy()?.session.isModuleBytes()) {
+          type = 'WASM-based';
+        } else {
+          type = 'Contract Call';
+        }
+      }
+      if (transaction.getTransactionV1()) {
+        if (transaction.target.session?.moduleBytes) {
+          type = 'WASM-based';
+        } else {
+          type = 'Contract Call';
+        }
+      }
       break;
     default:
       type = 'WASM-based';
