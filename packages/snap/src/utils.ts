@@ -17,6 +17,8 @@ import type {
 } from 'casper-js-sdk';
 import type { CLValueResult } from 'casper-js-sdk/dist/types/clvalue/Result';
 
+import { CSPR_API_PROXY_REFERER } from './constants/config';
+
 /**
  * Sanitise nested lists.
  *
@@ -138,12 +140,12 @@ async function parseTransferData(
       await fetch('https://api.mainnet.casperwallet.io/rates/1/amount', {
         headers: {
           'Content-Type': 'application/json',
-          Referer: process.env.REFERER,
+          Referer: CSPR_API_PROXY_REFERER,
         },
       })
     ).json();
     transferArgs['USD Value'] = `${
-      Conversions.motesToCSPR(amount).toNumber() * rateResponse.data.amount
+      parseFloat(Conversions.motesToCSPR(amount)) * rateResponse.data.amount
     }`;
   } catch (error) {
     console.warn(error, 'Error while retrieving CSPR Rate.');
@@ -193,11 +195,38 @@ export async function transactionToObject(
     case TransactionEntryPointEnum.Transfer:
       type = 'Transfer';
       break;
+    case TransactionEntryPointEnum.AddBid:
+      type = 'Add Bid';
+      break;
+    case TransactionEntryPointEnum.WithdrawBid:
+      type = 'Withdraw Bid';
+      break;
+    case TransactionEntryPointEnum.Delegate:
+      type = 'Delegate';
+      break;
+    case TransactionEntryPointEnum.Undelegate:
+      type = 'Undelegate';
+      break;
+    case TransactionEntryPointEnum.Redelegate:
+      type = 'Redelegate';
+      break;
+    case TransactionEntryPointEnum.ActivateBid:
+      type = 'Activate Bid';
+      break;
+    case TransactionEntryPointEnum.ChangeBidPublicKey:
+      type = 'Change Bid Public Key';
+      break;
+    case TransactionEntryPointEnum.AddReservations:
+      type = 'Add Reservations';
+      break;
+    case TransactionEntryPointEnum.CancelReservations:
+      type = 'Cancel Reservations';
+      break;
     case TransactionEntryPointEnum.Call:
       type = 'Contract Call';
       break;
     default:
-      type = 'WASM';
+      type = 'WASM-based';
       break;
   }
 

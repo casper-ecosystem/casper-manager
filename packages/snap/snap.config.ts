@@ -16,9 +16,6 @@ const config: SnapConfig = {
     buffer: true,
     crypto: true,
   },
-  environment: {
-    REFERER: process.env.REFERER,
-  },
 };
 
 export default config;

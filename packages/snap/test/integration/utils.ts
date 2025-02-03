@@ -147,8 +147,8 @@ const mapType = new CLTypeMap(CLTypeString, CLTypeString);
 const map = new CLValue(mapType);
 map.map = new CLValueMap(mapType);
 map.map?.append(
-  CLValueString.newCLString('keyTest'),
-  CLValueString.newCLString('valueTest'),
+  CLValue.newCLString('keyTest'),
+  CLValue.newCLString('valueTest'),
 );
 
 const myTup1 = new CLValue(new CLTypeTuple1(CLTypeBool));

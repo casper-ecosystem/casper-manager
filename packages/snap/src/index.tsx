@@ -116,16 +116,14 @@ const Payment: SnapComponent<PaymentProps> = ({ transaction }) => {
         </Row>
         <Row label="Gas price tolerance">
           <Text>
-            {transaction.pricingMode.paymentLimited.gasPriceTolerance.toFixed(
-              0,
-            )}
+            {transaction.pricingMode.paymentLimited.gasPriceTolerance.toString()}
           </Text>
         </Row>
         <Row label="Payment Amount">
           <Text>
             {Conversions.motesToCSPR(
-              transaction.pricingMode.paymentLimited.paymentAmount.toFixed(0),
-            ).toString()}
+              transaction.pricingMode.paymentLimited.paymentAmount,
+            )}{' '}
             CSPR
           </Text>
         </Row>
@@ -140,14 +138,12 @@ const Payment: SnapComponent<PaymentProps> = ({ transaction }) => {
         </Row>
         <Row label="Gas price tolerance">
           <Text>
-            {transaction.pricingMode.fixed.gasPriceTolerance.toFixed(0)}
+            {transaction.pricingMode.fixed.gasPriceTolerance.toString()}
           </Text>
         </Row>
         <Row label="Additional Computation Power">
           <Text>
-            {transaction.pricingMode.fixed.additionalComputationFactor.toFixed(
-              0,
-            )}
+            {transaction.pricingMode.fixed.additionalComputationFactor.toString()}
           </Text>
         </Row>
       </Box>
@@ -178,7 +174,7 @@ const Payment: SnapComponent<PaymentProps> = ({ transaction }) => {
                 .getDeploy()
                 ?.payment.moduleBytes?.args.getByName('amount')
                 ?.toString() as string,
-            ).toString()}{' '}
+            )}{' '}
             CSPR
           </Text>
         </Row>
@@ -214,10 +210,24 @@ async function promptUserDeployInfo(
       content: (
         <Box>
           <Box center={true}>
-            <Heading size={'md'}>Sign {deployInfo.deployType}</Heading>
+            <Heading size={'md'}>{deployInfo.deployType} request</Heading>
           </Box>
           <Divider />
           <Section>
+            <Heading>{deployInfo.deployType} details</Heading>
+            {Object.entries(deployInfo.deployArgs).map((arg: any) => (
+              <Box>
+                <Text>
+                  <Bold>{arg[0]}</Bold>
+                </Text>
+                {Array.isArray(arg[1]) ? (
+                  <Text>Test</Text>
+                ) : (
+                  <DisplayArg arg={arg[1]} />
+                )}
+              </Box>
+            ))}
+            <Divider />
             <Text>
               <Bold>Request origin</Bold>
             </Text>
@@ -266,22 +276,6 @@ async function promptUserDeployInfo(
               <Text>{deployInfo.timestamp}</Text>
             </Row>
             <Payment transaction={transaction} />
-            <Row label="Transaction Type">
-              <Text>{transaction.entryPoint.type}</Text>
-            </Row>
-            <Heading>Transaction arguments</Heading>
-            {Object.entries(deployInfo.deployArgs).map((arg: any) => (
-              <Box>
-                <Text>
-                  <Bold>{arg[0]}</Bold>
-                </Text>
-                {Array.isArray(arg[1]) ? (
-                  <Text>Test</Text>
-                ) : (
-                  <DisplayArg arg={arg[1]} />
-                )}
-              </Box>
-            ))}
           </Section>
         </Box>
       ),
