@@ -2,15 +2,15 @@ import { getBIP44AddressKeyDeriver } from '@metamask/key-tree';
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 import type { SnapComponent } from '@metamask/snaps-sdk/jsx';
 import {
-  Section,
-  Link,
-  Tooltip,
   Bold,
   Box,
   Copyable,
   Heading,
+  Link,
   Row,
+  Section,
   Text,
+  Tooltip,
 } from '@metamask/snaps-sdk/jsx';
 import {
   AccountHash,
@@ -197,6 +197,7 @@ const Payment: SnapComponent<PaymentProps> = ({ transaction }) => {
 type CallDetailsProps = {
   transaction: Transaction;
   deployArgs: object;
+  deployType: string;
 };
 
 type CallArgumentsProps = {
@@ -233,6 +234,7 @@ const CallArguments: SnapComponent<CallArgumentsProps> = ({ deployArgs }) => {
 const CallDetails: SnapComponent<CallDetailsProps> = ({
   transaction,
   deployArgs,
+  deployType,
 }) => {
   if (transaction.target.stored?.id.byHash) {
     return (
@@ -302,6 +304,10 @@ const CallDetails: SnapComponent<CallDetailsProps> = ({
             {transaction.target.stored?.id.byPackageName.version?.toString() ??
               'Latest'}
           </Text>
+          <Text>
+            <Bold>Entrypoint</Bold>
+          </Text>
+          <Text>{transaction.entryPoint.customEntryPoint ?? deployType}</Text>
         </Box>
       </Section>
     );
@@ -353,6 +359,7 @@ async function promptUserDeployInfo(
           <CallDetails
             transaction={transaction}
             deployArgs={deployInfo.deployArgs}
+            deployType={deployInfo.deployType}
           />
           <Section>
             <Text>
@@ -383,11 +390,12 @@ async function promptUserDeployInfo(
                   ''
                 }`}
               >
-                {truncate(
-                  transaction.initiatorAddr.publicKey?.toHex() ??
-                    transaction.initiatorAddr.accountHash?.toHex() ??
-                    '',
-                )}
+                {truncate(transaction.initiatorAddr.publicKey?.toHex() ?? '')}
+                {`account-hash-${truncate(
+                  transaction.initiatorAddr.accountHash
+                    ?.toHex()
+                    .replace('account-hash-', '') ?? '',
+                )}`}
               </Link>
             </Tooltip>
             <Text>

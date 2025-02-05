@@ -133,8 +133,24 @@ async function parseTransferData(
   const amount = transferDeploy?.args.args.get('amount')?.toString() ?? '';
 
   const id = transferDeploy?.args.args.get('id')?.toString();
+  if (amount) {
+    transferArgs.Amount = await parseCsprAmount(amount);
+  }
+  if (id) {
+    transferArgs['Transfer ID'] = id;
+  }
 
-  transferArgs.Amount = `${Conversions.motesToCSPR(amount).toString()} CSPR`;
+  return transferArgs;
+}
+
+/**
+ * Parse a CSPR amount.
+ *
+ * @param amount - Motes amount.
+ * @returns Formatted CSPR amount.
+ */
+async function parseCsprAmount(amount: string) {
+  let parsedAmount = `${Conversions.motesToCSPR(amount).toString()} CSPR`;
   try {
     const rateResponse = await (
       await fetch('https://api.mainnet.casperwallet.io/rates/1/amount', {
@@ -144,17 +160,13 @@ async function parseTransferData(
         },
       })
     ).json();
-    transferArgs.Amount = `${transferArgs.Amount as string} (${
+    parsedAmount = `${parsedAmount} (${
       parseFloat(Conversions.motesToCSPR(amount)) * rateResponse.data.amount
     } $)`;
   } catch (error) {
     console.warn(error, 'Error while retrieving CSPR Rate.');
   }
-  if (id) {
-    transferArgs['Transfer ID'] = id;
-  }
-
-  return transferArgs;
+  return parsedAmount;
 }
 
 /**
@@ -293,6 +305,15 @@ export async function transactionToObject(
       transaction.args.args.forEach((argument, key) => {
         deployArgs[key] = parseDeployArg(argument);
       });
+    }
+    if (
+      transaction.target.native &&
+      transaction.entryPoint.type !== TransactionEntryPointEnum.Transfer
+    ) {
+      const amount = transaction.args.args.get('amount')?.toString() ?? '';
+      if (amount) {
+        deployArgs.Amount = await parseCsprAmount(amount);
+      }
     }
     return {
       deployHash: transaction.hash.toHex(),
