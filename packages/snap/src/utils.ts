@@ -144,9 +144,9 @@ async function parseTransferData(
         },
       })
     ).json();
-    transferArgs['USD Value'] = `${
+    transferArgs.Amount = `${transferArgs.Amount as string} (${
       parseFloat(Conversions.motesToCSPR(amount)) * rateResponse.data.amount
-    }`;
+    } $)`;
   } catch (error) {
     console.warn(error, 'Error while retrieving CSPR Rate.');
   }

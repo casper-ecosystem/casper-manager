@@ -292,7 +292,10 @@ describe('onRpcRequest', () => {
       method: 'casper_sign',
     });
     expect(resPromise.response).toEqual({
-      result: { error: 'Unable to convert json into deploy object.' },
+      result: {
+        error:
+          "Unable to convert json into deploy object. Details : The JSON can't be parsed as a Transaction.",
+      },
     });
 
     resPromise = await request({
@@ -302,7 +305,10 @@ describe('onRpcRequest', () => {
       },
     });
     expect(resPromise.response).toEqual({
-      result: { error: 'Unable to convert json into deploy object.' },
+      result: {
+        error:
+          "Unable to convert json into deploy object. Details : The JSON can't be parsed as a Transaction.",
+      },
     });
 
     resPromise = await request({
@@ -312,7 +318,10 @@ describe('onRpcRequest', () => {
       },
     });
     expect(resPromise.response).toEqual({
-      result: { error: 'Unable to convert json into deploy object.' },
+      result: {
+        error:
+          "Unable to convert json into deploy object. Details : The JSON can't be parsed as a Transaction.",
+      },
     });
 
     resPromise = await request({
@@ -337,7 +346,10 @@ describe('onRpcRequest', () => {
       },
     });
     expect(resPromise.response).toEqual({
-      result: { error: 'Unable to convert json into deploy object.' },
+      result: {
+        error:
+          "Unable to convert json into deploy object. Details : The JSON can't be parsed as a Transaction.",
+      },
     });
 
     resPromise = await request({

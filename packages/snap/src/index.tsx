@@ -2,7 +2,6 @@ import { getBIP44AddressKeyDeriver } from '@metamask/key-tree';
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 import type { SnapComponent } from '@metamask/snaps-sdk/jsx';
 import {
-  Divider,
   Section,
   Link,
   Tooltip,
@@ -75,7 +74,14 @@ const DisplayArg: SnapComponent<ArgProps> = ({ arg }) => {
     if (AccountHash.fromString(arg)) {
       return (
         <Tooltip content={arg}>
-          <Link href={`https://cspr.live/search/${arg}`}>{truncate(arg)}</Link>
+          <Link
+            href={`https://cspr.live/search/${arg.replace(
+              'account-hash-',
+              '',
+            )}`}
+          >
+            {truncate(arg)}
+          </Link>
         </Tooltip>
       );
     }
@@ -188,63 +194,126 @@ const Payment: SnapComponent<PaymentProps> = ({ transaction }) => {
   );
 };
 
-type ContractProps = {
+type CallDetailsProps = {
   transaction: Transaction;
+  deployArgs: object;
 };
 
-const Contract: SnapComponent<ContractProps> = ({ transaction }) => {
-  if (transaction.target.stored?.id.byHash) {
+type CallArgumentsProps = {
+  deployArgs: object;
+};
+
+const CallArguments: SnapComponent<CallArgumentsProps> = ({ deployArgs }) => {
+  if (Object.entries(deployArgs).length > 0) {
     return (
       <Box>
-        <Text>
-          <Bold>Contract Hash</Bold>
-        </Text>
-        <Text>{transaction.target.stored?.id.byHash.toHex()}</Text>
+        <Heading>Arguments</Heading>
+        {Object.entries(deployArgs).map((arg: any) => (
+          <Box>
+            <Text>
+              <Bold>{arg[0]}</Bold>
+            </Text>
+            {Array.isArray(arg[1]) ? (
+              <Text>Test</Text>
+            ) : (
+              <DisplayArg arg={arg[1]} />
+            )}
+          </Box>
+        ))}
       </Box>
+    );
+  }
+  return (
+    <Box>
+      <Text> </Text>
+    </Box>
+  );
+};
+
+const CallDetails: SnapComponent<CallDetailsProps> = ({
+  transaction,
+  deployArgs,
+}) => {
+  if (transaction.target.stored?.id.byHash) {
+    return (
+      <Section>
+        <Box>
+          <CallArguments deployArgs={deployArgs} />
+          <Heading>Contract</Heading>
+          <Text>
+            <Bold>Hash</Bold>
+          </Text>
+          <Text>{transaction.target.stored?.id.byHash.toHex()}</Text>
+        </Box>
+      </Section>
     );
   }
   if (transaction.target.stored?.id.byName) {
     return (
-      <Box>
-        <Text>
-          <Bold>Contract Hash</Bold>
-        </Text>
-        <Text>{transaction.target.stored?.id.byName}</Text>
-      </Box>
+      <Section>
+        <Box>
+          <CallArguments deployArgs={deployArgs} />
+          <Heading>Contract</Heading>
+          <Text>
+            <Bold>Hash</Bold>
+          </Text>
+          <Text>{transaction.target.stored?.id.byName}</Text>
+        </Box>
+      </Section>
     );
   }
   if (transaction.target.stored?.id.byPackageHash) {
     return (
-      <Box>
-        <Text>
-          <Bold>Contract Package Hash</Bold>
-        </Text>
-        <Text>{transaction.target.stored?.id.byPackageHash.addr.toHex()}</Text>
-        <Text>
-          <Bold>Contract Package Version</Bold>
-        </Text>
-        <Text>
-          {transaction.target.stored?.id.byPackageHash.version?.toString() ??
-            'Latest'}
-        </Text>
-      </Box>
+      <Section>
+        <Box>
+          <CallArguments deployArgs={deployArgs} />
+          <Heading>Contract</Heading>
+          <Text>
+            <Bold>Package Hash</Bold>
+          </Text>
+          <Text>
+            {transaction.target.stored?.id.byPackageHash.addr.toHex()}
+          </Text>
+          <Text>
+            <Bold>Package Version</Bold>
+          </Text>
+          <Text>
+            {transaction.target.stored?.id.byPackageHash.version?.toString() ??
+              'Latest'}
+          </Text>
+        </Box>
+      </Section>
     );
   }
   if (transaction.target.stored?.id.byPackageName) {
     return (
-      <Box>
-        <Text>
-          <Bold>Contract Package Name</Bold>
-        </Text>
-        <Text>{transaction.target.stored?.id.byPackageName.name}</Text>
-        <Text>
-          <Bold>Contract Package Version</Bold>
-        </Text>
-        <Text>
-          {transaction.target.stored?.id.byPackageName.version?.toString() ??
-            'Latest'}
-        </Text>
-      </Box>
+      <Section>
+        <Box>
+          <CallArguments deployArgs={deployArgs} />
+          <Heading>Contract</Heading>
+          <Text>
+            <Bold>Package Name</Bold>
+          </Text>
+          <Text>{transaction.target.stored?.id.byPackageName.name}</Text>
+          <Text>
+            <Bold>Package Version</Bold>
+          </Text>
+          <Text>
+            {transaction.target.stored?.id.byPackageName.version?.toString() ??
+              'Latest'}
+          </Text>
+        </Box>
+      </Section>
+    );
+  }
+  if (Object.entries(deployArgs).length > 0) {
+    return (
+      <Section>
+        <Box>
+          <CallArguments deployArgs={deployArgs} />
+          <Text> </Text>
+        </Box>
+      </Section>
     );
   }
   return (
@@ -278,27 +347,14 @@ async function promptUserDeployInfo(
           <Box center={true}>
             <Heading size={'md'}>{deployInfo.deployType} request</Heading>
           </Box>
-          <Divider />
+          <Box>
+            <Text>Review the transaction details requested by {origin}.</Text>
+          </Box>
+          <CallDetails
+            transaction={transaction}
+            deployArgs={deployInfo.deployArgs}
+          />
           <Section>
-            <Heading>{deployInfo.deployType} details</Heading>
-            {Object.entries(deployInfo.deployArgs).map((arg: any) => (
-              <Box>
-                <Text>
-                  <Bold>{arg[0]}</Bold>
-                </Text>
-                {Array.isArray(arg[1]) ? (
-                  <Text>Test</Text>
-                ) : (
-                  <DisplayArg arg={arg[1]} />
-                )}
-              </Box>
-            ))}
-            <Divider />
-            <Contract transaction={transaction} />
-            <Text>
-              <Bold>Request origin</Bold>
-            </Text>
-            <Text>{origin}</Text>
             <Text>
               <Bold>Signing Key</Bold>
             </Text>
@@ -307,10 +363,6 @@ async function promptUserDeployInfo(
                 {truncate(deployInfo.signingKey)}
               </Link>
             </Tooltip>
-            <Text>
-              <Bold>Transaction Hash</Bold>
-            </Text>
-            <Copyable value={transaction.hash.toHex()} />
             <Text>
               <Bold>Account</Bold>
             </Text>
@@ -325,7 +377,9 @@ async function promptUserDeployInfo(
               <Link
                 href={`https://cspr.live/search/${
                   transaction.initiatorAddr.publicKey?.toHex() ??
-                  transaction.initiatorAddr.accountHash?.toHex() ??
+                  transaction.initiatorAddr.accountHash
+                    ?.toHex()
+                    .replace('account-hash-', '') ??
                   ''
                 }`}
               >
@@ -336,6 +390,12 @@ async function promptUserDeployInfo(
                 )}
               </Link>
             </Tooltip>
+            <Text>
+              <Bold>Transaction Hash</Bold>
+            </Text>
+            <Copyable value={transaction.hash.toHex()} />
+          </Section>
+          <Section>
             <Row label="Chain">
               <Text>{transaction.chainName}</Text>
             </Row>
@@ -446,7 +506,9 @@ async function sign(
     }
   } catch (error) {
     return {
-      error: `Unable to convert json into deploy object.`,
+      error: `Unable to convert json into deploy object. Details : ${
+        error instanceof Error ? error.message : String(error)
+      }`,
     };
   }
 

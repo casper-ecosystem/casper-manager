@@ -29,7 +29,7 @@
   "dependencies": {
     "@metamask/key-tree": "10.0.2",
     "@metamask/snaps-sdk": "6.15.0",
-    "casper-js-sdk": "5.0.7-beta2",
+    "casper-js-sdk": "5.0.8-beta2",
     "dotenv": "16.4.7"
   },
   "devDependencies": {

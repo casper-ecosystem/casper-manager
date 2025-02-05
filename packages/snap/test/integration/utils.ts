@@ -176,6 +176,10 @@ publicKey.publicKey = PublicKey.fromHex(
   '0168e3a352e7bab76c85fb77f7c641d77096dae55845c79655522c24e9cc1ffe21',
 );
 
+const accountHash = CLValue.newCLKey(
+  Key.newKey(publicKey.publicKey.accountHash().toPrefixedString()),
+);
+
 const CLValues = {
   clboolfalse,
   i32,
@@ -201,6 +205,7 @@ const CLValues = {
   myTup2,
   myTup3,
   publicKey,
+  accountHash,
 };
 
 /**
@@ -221,7 +226,7 @@ function fakeTransfer(pk: string) {
 
   const session = new ExecutableDeployItem();
   session.transfer = TransferDeployItem.newTransfer(
-    '1',
+    '100000000000',
     PublicKey.fromHex(
       '0168e3a352e7bab76c85fb77f7c641d77096dae55845c79655522c24e9cc1ffe22',
     ),
