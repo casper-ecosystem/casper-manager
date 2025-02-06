@@ -116,6 +116,21 @@ export function parseDeployArg(arg: unknown): string | any[] {
 }
 
 /**
+ * Format account hash string.
+ *
+ * @param accountHash - Hex representation of an account-hash.
+ * @returns Truncated and formatted account-hash.
+ */
+export function formatAccountHashTruncate(
+  accountHash: string | undefined,
+): string {
+  if (accountHash) {
+    return `account-hash-${truncate(accountHash.replace('account-hash-', ''))}`;
+  }
+  return '';
+}
+
+/**
  * Parse a transfer deploy.
  *
  * @param transferDeploy - A transfer deploy from the casper js sdk.
@@ -127,8 +142,15 @@ async function parseTransferData(
   const transferArgs = {} as any;
 
   // Target can either be a hex formatted public key or an account hash
-
   transferArgs.Recipient = transferDeploy.args.args.get('target')?.toString();
+
+  if (
+    transferDeploy.args.args.get('target')?.toString().includes('account-hash-')
+  ) {
+    transferArgs.Recipient = formatAccountHashTruncate(
+      transferDeploy.args.args.get('target')?.toString(),
+    );
+  }
 
   const amount = transferDeploy?.args.args.get('amount')?.toString() ?? '';
 
@@ -312,7 +334,7 @@ export async function transactionToObject(
     ) {
       const amount = transaction.args.args.get('amount')?.toString() ?? '';
       if (amount) {
-        deployArgs.Amount = await parseCsprAmount(amount);
+        deployArgs.amount = await parseCsprAmount(amount);
       }
     }
     return {

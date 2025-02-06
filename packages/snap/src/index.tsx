@@ -24,7 +24,11 @@ import {
   TransactionV1,
 } from 'casper-js-sdk';
 
-import { transactionToObject, truncate } from './utils';
+import {
+  formatAccountHashTruncate,
+  transactionToObject,
+  truncate,
+} from './utils';
 
 /* eslint-disable no-restricted-globals */
 
@@ -80,7 +84,7 @@ const DisplayArg: SnapComponent<ArgProps> = ({ arg }) => {
               '',
             )}`}
           >
-            {truncate(arg)}
+            {formatAccountHashTruncate(arg)}
           </Link>
         </Tooltip>
       );
@@ -246,6 +250,10 @@ const CallDetails: SnapComponent<CallDetailsProps> = ({
             <Bold>Hash</Bold>
           </Text>
           <Text>{transaction.target.stored?.id.byHash.toHex()}</Text>
+          <Text>
+            <Bold>Entrypoint</Bold>
+          </Text>
+          <Text>{transaction.entryPoint.customEntryPoint ?? deployType}</Text>
         </Box>
       </Section>
     );
@@ -257,9 +265,13 @@ const CallDetails: SnapComponent<CallDetailsProps> = ({
           <CallArguments deployArgs={deployArgs} />
           <Heading>Contract</Heading>
           <Text>
-            <Bold>Hash</Bold>
+            <Bold>Name</Bold>
           </Text>
           <Text>{transaction.target.stored?.id.byName}</Text>
+          <Text>
+            <Bold>Entrypoint</Bold>
+          </Text>
+          <Text>{transaction.entryPoint.customEntryPoint ?? deployType}</Text>
         </Box>
       </Section>
     );
@@ -283,6 +295,10 @@ const CallDetails: SnapComponent<CallDetailsProps> = ({
             {transaction.target.stored?.id.byPackageHash.version?.toString() ??
               'Latest'}
           </Text>
+          <Text>
+            <Bold>Entrypoint</Bold>
+          </Text>
+          <Text>{transaction.entryPoint.customEntryPoint ?? deployType}</Text>
         </Box>
       </Section>
     );
@@ -391,10 +407,8 @@ async function promptUserDeployInfo(
                 }`}
               >
                 {truncate(transaction.initiatorAddr.publicKey?.toHex() ?? '')}
-                {`account-hash-${truncate(
-                  transaction.initiatorAddr.accountHash
-                    ?.toHex()
-                    .replace('account-hash-', '') ?? '',
+                {`${formatAccountHashTruncate(
+                  transaction.initiatorAddr.accountHash?.toHex() ?? '',
                 )}`}
               </Link>
             </Tooltip>
