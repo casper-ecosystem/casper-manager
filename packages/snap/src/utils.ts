@@ -306,7 +306,6 @@ export async function transactionToObject(
       storedContract.args.args.forEach((argument, key) => {
         deployArgs[key] = parseDeployArg(argument);
       });
-      deployArgs['Entry Point'] = storedContract.entryPoint;
     }
     return {
       deployHash: transaction.hash.toHex(),
