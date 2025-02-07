@@ -14,10 +14,10 @@ import type {
   URef,
   Transaction,
   CLValueMap,
+  CLValueResult,
 } from 'casper-js-sdk';
-import type { CLValueResult } from 'casper-js-sdk/dist/types/clvalue/Result';
 
-import { CSPR_API_PROXY_REFERER } from './constants/config';
+import { CSPR_API_RATE_URL } from './constants/config';
 
 /**
  * Sanitise nested lists.
@@ -142,19 +142,22 @@ async function parseTransferData(
   const transferArgs = {} as any;
 
   // Target can either be a hex formatted public key or an account hash
-  transferArgs.Recipient = transferDeploy.args.args.get('target')?.toString();
+  transferArgs.Recipient = transferDeploy.args.getByName('target')?.toString();
 
   if (
-    transferDeploy.args.args.get('target')?.toString().includes('account-hash-')
+    transferDeploy.args
+      .getByName('target')
+      ?.toString()
+      .includes('account-hash-')
   ) {
     transferArgs.Recipient = formatAccountHashTruncate(
-      transferDeploy.args.args.get('target')?.toString(),
+      transferDeploy.args.getByName('target')?.toString(),
     );
   }
 
-  const amount = transferDeploy?.args.args.get('amount')?.toString() ?? '';
+  const amount = transferDeploy?.args.getByName('amount')?.toString() ?? '';
 
-  const id = transferDeploy?.args.args.get('id')?.toString();
+  const id = transferDeploy?.args.getByName('id')?.toString();
   if (amount) {
     transferArgs.Amount = await parseCsprAmount(amount);
   }
@@ -174,14 +177,7 @@ async function parseTransferData(
 async function parseCsprAmount(amount: string) {
   let parsedAmount = `${Conversions.motesToCSPR(amount).toString()} CSPR`;
   try {
-    const rateResponse = await (
-      await fetch('https://api.mainnet.casperwallet.io/rates/1/amount', {
-        headers: {
-          'Content-Type': 'application/json',
-          Referer: CSPR_API_PROXY_REFERER,
-        },
-      })
-    ).json();
+    const rateResponse = await (await fetch(CSPR_API_RATE_URL)).json();
     parsedAmount = `${parsedAmount} (${
       parseFloat(Conversions.motesToCSPR(amount)) * rateResponse.data.amount
     } $)`;
@@ -311,7 +307,6 @@ export async function transactionToObject(
       deployHash: transaction.hash.toHex(),
       signingKey,
       account: deployAccount,
-      bodyHash: deploy.header.bodyHash?.toHex(),
       chainName: transaction.chainName,
       timestamp: new Date(transaction.timestamp.date).toLocaleString(),
       gasPrice: deploy.header.gasPrice.toString(),
@@ -331,7 +326,7 @@ export async function transactionToObject(
       transaction.target.native &&
       transaction.entryPoint.type !== TransactionEntryPointEnum.Transfer
     ) {
-      const amount = transaction.args.args.get('amount')?.toString() ?? '';
+      const amount = transaction.args.getByName('amount')?.toString() ?? '';
       if (amount) {
         deployArgs.amount = await parseCsprAmount(amount);
       }
@@ -340,7 +335,6 @@ export async function transactionToObject(
       deployHash: transaction.hash.toHex(),
       signingKey,
       account: deployAccount,
-      bodyHash: Conversions.encodeBase16(transaction.entryPoint.toBytes()),
       chainName: transaction.chainName,
       timestamp: new Date(transaction.timestamp.date).toLocaleString(),
       deployType: type,

@@ -219,7 +219,7 @@ const CallArguments: SnapComponent<CallArgumentsProps> = ({ deployArgs }) => {
               <Bold>{arg[0]}</Bold>
             </Text>
             {Array.isArray(arg[1]) ? (
-              <Text>Test</Text>
+              <Text>{arg[1].join(',')}</Text>
             ) : (
               <DisplayArg arg={arg[1]} />
             )}
