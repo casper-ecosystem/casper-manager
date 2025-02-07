@@ -1,29 +1,12 @@
-# Casper Manager
+# TypeScript Example Snap
 
-Snap to enable MetaMask users interaction with [Casper](https://docs.casperlabs.io/) dapps.
+This snap demonstrates how to develop a snap with TypeScript. It is a simple
+snap that displays a confirmation dialog when the `hello` JSON-RPC method is
+called.
 
-For detailed documentation and integration instructions see our [helper](https://casper-ecosystem.github.io/casper-manager/).
+## Testing
 
-## RPC Methods
-
-### casper_getAccount
-
-Take one optional parameter which is `addressIndex`. Default to 0.
-
-Define the index of the Casper address to derive.
-
-### casper_sign
-
-Take 3 arguments :
-
-`deployJson` -> A JSON formatted deploy.
-
-`addressIndex` -> Default to 0. Define the index of the Casper address to derive.
-
-### casper_signMessage
-
-Take 2 arguments :
-
-`message` -> Your message to sign. Ex: `Hello World`
-
-`addressIndex` -> Default to 0. Define the index of the Casper address to derive.
+The snap comes with some basic tests, to demonstrate how to write tests for
+snaps. To test the snap, run `yarn test` in this directory. This will use
+[`@metamask/snaps-jest`](https://github.com/MetaMask/snaps/tree/main/packages/snaps-jest)
+to run the tests in `src/index.test.ts`.

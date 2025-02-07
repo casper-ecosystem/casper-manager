@@ -2,7 +2,7 @@
  * Window type extension to support ethereum
  */
 
-import { MetaMaskInpageProvider } from '@metamask/providers';
+import type { MetaMaskInpageProvider } from '@metamask/providers';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

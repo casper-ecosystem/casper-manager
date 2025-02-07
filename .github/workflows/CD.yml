@@ -25,21 +25,26 @@ jobs:
     name: Publish release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Use Node.js
+        uses: actions/setup-node@v4
         with:
-          fetch-depth: 0
-
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          registry-url: 'https://registry.npmjs.org'
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
 
       - run: yarn install --immutable
+      - name: 'Create env file'
+        run: |
+          echo "$ENV_FILE" > .env
+          cat .env
+        env:
+          ENV_FILE: ${{ secrets.ENV_FILE }}
       - run: yarn build
 
       - name: NPM config
-        run: npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
+        run: npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -54,4 +59,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TYPE_ARG: ${{ fromJSON('{"auto":"", "patch":"--patch", "minor":"--minor", "major":"--major", "beta":"--preRelease=beta --npm.tag=next", "alpha":"--preRelease=alpha --npm.tag=next"}')[github.event.inputs.type] }}
           DRY_ARG: ${{ github.event.inputs.dry == 'true' && '--dry-run' || '' }}
-        run: yarn run release --ci --no-git.requireUpstream --verbose $TYPE_ARG $DRY_ARG
+        run: yarn run release --ci --no-git.requireUpstream --verbose "$TYPE_ARG" "$DRY_ARG"

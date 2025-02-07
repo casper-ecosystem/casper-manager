@@ -10,8 +10,8 @@ Any website/dapps can request you to install the Snap. It's up to them to implem
 
 Here's some website that use the Snap at the moment :
 
-- https://cspr.live/ - A Casper Network Explorer 
-- https://cspr.market/ - A Casper Network NFT marketplace 
+- https://cspr.live/ - A Casper Network Explorer
+- https://cspr.market/ - A Casper Network NFT marketplace
 - https://casperswap.xyz/ - A Casper Network DEX
 - https://casperholders.io/ - A Casper Dapp to use the features of the network (staking/transfer etc...)
 - https://div3.in/ - A Casper Network Explorer

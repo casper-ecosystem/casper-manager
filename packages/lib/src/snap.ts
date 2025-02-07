@@ -1,5 +1,6 @@
-import { GetSnapsResponse } from './types';
+/* eslint-disable no-restricted-globals */
 import { SNAP_ID } from './constants';
+import type { GetSnapsResponse } from './types';
 
 /**
  * Detect if the wallet injecting the ethereum object is Flask.
@@ -40,6 +41,7 @@ async function installSnap(snapID = SNAP_ID) {
  * Get the snap.
  *
  * @param snapID - ID of the snap. Default to the npm lib.
+ * @returns The snap infos.
  */
 async function getSnap(snapID = SNAP_ID) {
   const snaps = (await window.ethereum.request({

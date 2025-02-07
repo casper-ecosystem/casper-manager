@@ -76,4 +76,8 @@ node_modules/
 .yarn/install-state.gz
 .pnp.*
 
+packages/snap/.yalc/
+
+packages/snap/yalc.lock
+
 .idea/

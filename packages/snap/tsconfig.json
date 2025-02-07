@@ -1,5 +1,9 @@
 {
   "extends": "../../tsconfig.json",
-  "files": ["../../node_modules/@metamask/snap-types/global.d.ts"],
-  "include": ["src"]
+  "compilerOptions": {
+    "baseUrl": "./",
+    "jsx": "react-jsx",
+    "jsxImportSource": "@metamask/snaps-sdk"
+  },
+  "include": ["**/*.ts", "**/*.tsx"]
 }

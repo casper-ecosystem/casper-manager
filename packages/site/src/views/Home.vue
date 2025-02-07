@@ -47,11 +47,40 @@
     </v-card>
     <v-card>
       <v-card-title>
+        Sign transfer
+      </v-card-title>
+      <v-card-text>
+        <span v-if='publicKey === ""' class='font-weight-bold text-h6'>Please get an account above first</span>
+        <v-textarea label="Transfer" class="mt-2" :readonly='true' v-model='transferJSON'/>
+        <v-textarea label="Signed transfer" :readonly='true' v-model='signedTransferJSON'/>
+        <span>Is signed deploy valid ? {{signedTransfer ? validateTransfer : "No signed Transfer yet"}}</span>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn @click='signTransfer' :disabled='publicKey === ""'>Sign Transfer</v-btn>
+      </v-card-actions>
+    </v-card>
+    <v-card>
+      <v-card-title>
+        Sign fake deploy all args
+      </v-card-title>
+      <v-card-text>
+        <span v-if='publicKey === ""' class='font-weight-bold text-h6'>Please get an account above first</span>
+        <v-textarea label="Deploy" class="mt-2" :readonly='true' v-model='deployArgsJSON'/>
+        <v-textarea label="Signed deploy" :readonly='true' v-model='signedDeployArgsJSON'/>
+        <span>Is signed deploy valid ? {{signedDeployArgs ? validateDeployArgs : "No signed deploy yet"}}</span>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn @click='signDeployArgs' :disabled='publicKey === ""'>Sign deploy</v-btn>
+      </v-card-actions>
+    </v-card>
+    <v-card>
+      <v-card-title>
         Sign message
       </v-card-title>
       <v-card-text>
         <v-text-field label="Message" v-model='message'/>
         <v-text-field label="Signature" :readonly='true' v-model='messageSignature'/>
+        <span>Is signed message valid ? {{messageSignature ? validateMessage : "No signed message yet"}}</span>
       </v-card-text>
       <v-card-actions>
         <v-btn @click='signMessage'>Sign</v-btn>
@@ -63,74 +92,152 @@
 <script lang="ts">
 import { getAccount, signDeploy, signMessage } from '../../../lib/src/casper-manager-helper';
 import { installSnap, getSnap } from '../../../lib/src/snap';
-import { CLPublicKey, DeployUtil } from 'casper-js-sdk';
+import {
+  Args,
+  Deploy,
+  DeployHeader,
+  Duration,
+  ExecutableDeployItem,
+  PublicKey,
+  Timestamp
+} from "casper-js-sdk";
+import {fakeStoredVersionContractByHash, fakeTransfer} from "snap/test/integration/utils";
 
 export default {
   name: 'Home',
   data: () => ({
     account: 0,
     publicKey: "",
-    deploy: undefined,
-    signedDeploy: undefined,
+    deploy: null,
+    transfer: null,
+    deployArgs: null,
+    signedDeploy: null,
+    signedTransfer: null,
+    signedDeployArgs: null,
     message: "test",
     messageSignature: "",
-    snapId: "local:http://localhost:9000/",
-    snapInfo: undefined,
+    snapId: "local:http://localhost:8000/",
+    snapInfo: null,
   }),
   computed: {
     deployJSON() {
       try {
-        return JSON.stringify(DeployUtil.deployToJson(this.deploy), null, 4);
+        return JSON.stringify(Deploy.toJSON(this.deploy), null, 4);
+      } catch (e: any) {
+        return e.message;
+      }
+    },
+    transferJSON() {
+      try {
+        return JSON.stringify(Deploy.toJSON(this.transfer), null, 4);
+      } catch (e: any) {
+        return e.message;
+      }
+    },
+    deployArgsJSON() {
+      try {
+        return JSON.stringify(Deploy.toJSON(this.deployArgs), null, 4);
+      } catch (e: any) {
+        return e.message;
+      }
+    },
+    signedDeployArgsJSON() {
+      try {
+        return JSON.stringify(Deploy.toJSON(this.signedDeployArgs), null, 4);
       } catch (e: any) {
         return e.message;
       }
     },
     signedDeployJSON() {
       try {
-        return JSON.stringify(DeployUtil.deployToJson(this.signedDeploy), null, 4);
+        return JSON.stringify(Deploy.toJSON(this.signedDeploy), null, 4);
+      } catch (e: any) {
+        return e.message;
+      }
+    },
+    signedTransferJSON() {
+      try {
+        return JSON.stringify(Deploy.toJSON(this.signedTransfer), null, 4);
       } catch (e: any) {
         return e.message;
       }
     },
     validateDeploy() {
-      return DeployUtil.validateDeploy(this.signedDeploy).ok ? "Valid signed deploy" : "Invalid signed deploy";
+      return this.signedDeploy.validate() ? "Valid signed deploy" : "Invalid signed deploy";
+    },
+    validateDeployArgs() {
+      return this.signedDeployArgs.validate() ? "Valid signed deploy" : "Invalid signed deploy";
+    },
+    validateTransfer() {
+      return this.signedTransfer.validate() ? "Valid signed transfer" : "Invalid signed transfer";
+    },
+    validateMessage() {
+      const pk = PublicKey.fromHex(this.publicKey);
+      const msg = Uint8Array.from(
+        Buffer.from(`Casper Message:\n${this.message}`),
+      );
+      const msgSignature = Buffer.from(this.messageSignature, "hex");
+      try {
+        if(pk.verifySignature(msg, msgSignature)) {
+          return "Valid signed message"
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      return "Invalid signed message";
+    }
+  },
+  watch: {
+    publicKey() {
+      if (this.publicKey !== "") {
+
+        const header = new DeployHeader(
+          'casper',
+          [],
+          1,
+          new Timestamp(new Date()),
+          new Duration(3600000),
+        );
+        header.account = PublicKey.fromHex(this.publicKey);
+
+        this.deploy = Deploy.makeDeploy(
+          header,
+          ExecutableDeployItem.standardPayment('1'),
+          ExecutableDeployItem.newModuleBytes(
+            new Uint8Array([0]),
+            Args.fromMap({}),
+          ),
+        );
+        this.deployArgs = fakeStoredVersionContractByHash(this.publicKey);
+        this.transfer = fakeTransfer(this.publicKey);
+      }
     }
   },
   async mounted() {
     this.snapInfo = await getSnap(this.snapId);
   },
-  watch: {
-    publicKey() {
-      this.deploy = DeployUtil.makeDeploy(
-        new DeployUtil.DeployParams(CLPublicKey.fromHex(this.publicKey), 'casper', 1, 3600000),
-        DeployUtil.ExecutableDeployItem.newTransfer(
-          1,
-          CLPublicKey.fromHex(
-            '0168e3a352e7bab76c85fb77f7c641d77096dae55845c79655522c24e9cc1ffe22',
-          ),
-          undefined,
-          0,
-        ),
-        DeployUtil.standardPayment(1),
-      );
-    }
-  },
   methods: {
     async installSnap() {
       await installSnap(this.snapId);
-      await getSnap();
+      await getSnap(this.snapId);
     },
     async getSnap() {
       await getSnap(this.snapId);
     },
     async getAccount() {
-      this.publicKey = (await getAccount(parseInt(this.account), this.snapId) as CLPublicKey).toHex();
+      this.publicKey = (await getAccount(this.account, this.snapId) as PublicKey).toHex();
     },
     async signMessage() {
-      this.messageSignature = await signMessage(this.message, {addressIndex: parseInt(this.account), snapID: this.snapId});
+      this.messageSignature = await signMessage(this.message, {addressIndex: this.account, snapID: this.snapId});
     },
     async signDeploy() {
-      this.signedDeploy = await signDeploy(this.deploy, {addressIndex: parseInt(this.account), snapID: this.snapId});
+      this.signedDeploy = await signDeploy(this.deploy, {addressIndex: this.account, snapID: this.snapId});
+    },
+    async signDeployArgs() {
+      this.signedDeployArgs = await signDeploy(this.deployArgs, {addressIndex: this.account, snapID: this.snapId});
+    },
+    async signTransfer() {
+      this.signedTransfer = await signDeploy(this.transfer, {addressIndex: this.account, snapID: this.snapId});
     },
   }
 }
