@@ -17,6 +17,7 @@
     "lint:style": "eslint --color 'src/**/*.{js,ts,tsx}'",
     "lint:style:fix": "yarn run lint:style --fix",
     "lint:types": "tsc --noEmit --pretty",
+    "release": "release-it",
     "test": "exit 0"
   },
   "dependencies": {

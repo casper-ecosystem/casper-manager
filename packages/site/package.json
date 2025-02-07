@@ -1,9 +1,10 @@
 {
   "name": "site",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "scripts": {
     "lint": "eslint . --fix --ignore-path .gitignore",
     "preview": "vite preview",
+    "release": "release-it",
     "start": "vite --port 8080"
   },
   "dependencies": {
@@ -27,7 +28,7 @@
     "eslint-plugin-vue": "9.32.0",
     "globals": "^15.14.0",
     "typescript": "5.7.2",
-    "vite": "6.0.5",
+    "vite": "6.0.9",
     "vite-plugin-vuetify": "2.0.4",
     "vue-tsc": "2.1.10"
   }

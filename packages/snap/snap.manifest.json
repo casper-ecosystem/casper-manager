@@ -7,7 +7,7 @@
     "url": "https://github.com/casper-ecosystem/casper-manager.git"
   },
   "source": {
-    "shasum": "YbnFU8C+L17qUPBGGYovaHVXX2BoS5ii0WJPDwQj1to=",
+    "shasum": "z19E3DGzYRpdaKMmOrrmMmiXlLtnPNgCRq+YrchW5XE=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

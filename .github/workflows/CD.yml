@@ -1,20 +1,30 @@
 name: release
-run-name: "release [${{ inputs.type }}] by @${{ github.actor }}${{ github.event.inputs.dry == 'true' && ' (dry run)' || '' }}"
+run-name: "${{ github.event.inputs.dry == 'true' && '[dry run] ' || '' }}release ${{ inputs.increment }}.${{ inputs.prerelease }} by @${{ github.actor }}"
+
+permissions:
+  contents: write
+  id-token: write
 
 on:
   workflow_dispatch:
     inputs:
-      type:
+      increment:
         type: choice
         description: Choose release
+        required: true
         options:
-          - auto
           - patch
           - minor
           - major
+          - bump
+      prerelease:
+        type: choice
+        description: Choose prerelease
+        required: true
+        options:
+          - stable
           - alpha
           - beta
-        default: auto
       dry:
         type: boolean
         description: Dry release
@@ -35,12 +45,6 @@ jobs:
           cache: 'yarn'
 
       - run: yarn install --immutable
-      - name: 'Create env file'
-        run: |
-          echo "$ENV_FILE" > .env
-          cat .env
-        env:
-          ENV_FILE: ${{ secrets.ENV_FILE }}
       - run: yarn build
 
       - name: NPM config
@@ -57,6 +61,7 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TYPE_ARG: ${{ fromJSON('{"auto":"", "patch":"--patch", "minor":"--minor", "major":"--major", "beta":"--preRelease=beta --npm.tag=next", "alpha":"--preRelease=alpha --npm.tag=next"}')[github.event.inputs.type] }}
-          DRY_ARG: ${{ github.event.inputs.dry == 'true' && '--dry-run' || '' }}
-        run: yarn run release --ci --no-git.requireUpstream --verbose "$TYPE_ARG" "$DRY_ARG"
+          INCREMENT_ARG: ${{ fromJSON('{"bump":"", "patch":"--increment=patch", "minor":"--increment=minor", "major":"--increment=major"}')[github.event.inputs.increment] }}
+          PRERELEASE_ARG: ${{ fromJSON('{"stable":"", "beta":"--prerelease=beta", "alpha":"--prerelease=alpha"}')[github.event.inputs.prerelease] }}
+          DRY_ARG: ${{ github.event.inputs.dry == 'true' && '--dry' || '' }}
+        run: yarn release "$INCREMENT_ARG" "$PRERELEASE_ARG" "$DRY_ARG" --ci --verbose
