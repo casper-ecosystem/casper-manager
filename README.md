@@ -23,6 +23,8 @@ Test Casper Snap on [CSPR.live](https://cspr.live) !
 
 ## Development
 
+You must build locally before committing any change to the snap because the shasum on the CICD must match the shasum commited.
+
 ### Requirements
 
 ```
@@ -55,6 +57,18 @@ yarn install
 
 ```sh
 yarn start
+```
+
+- Run lint
+
+```sh
+yarn lint:fix
+```
+
+- Build
+
+```sh
+yarn build
 ```
 
 - Run snap tests

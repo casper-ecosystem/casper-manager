@@ -1,16 +1,17 @@
 {
   "name": "root",
-  "version": "0.1.0",
-  "description": "",
-  "homepage": "https://github.com/MetaMask/template-snap-monorepo#readme",
+  "version": "1.0.4",
+  "private": true,
+  "description": "Monorepo for casper manager snap / helper / test site",
+  "homepage": "https://github.com/casper-ecosystem/casper-manager",
   "bugs": {
-    "url": "https://github.com/MetaMask/template-snap-monorepo/issues"
+    "url": "https://github.com/casper-ecosystem/casper-manager/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MetaMask/template-snap-monorepo.git"
+    "url": "https://github.com/casper-ecosystem/casper-manager.git"
   },
-  "license": "(MIT-0 OR Apache-2.0)",
+  "license": "Apache-2.0",
   "author": "",
   "workspaces": [
     "packages/*"
@@ -22,7 +23,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' --ignore-path .gitignore",
     "start": "yarn workspaces foreach --parallel --interlaced --verbose run start",
-    "test": "yarn workspace snap run test"
+    "test": "yarn workspace casper-manager run test"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.0.0",
@@ -54,6 +55,27 @@
     "allowScripts": {
       "@lavamoat/preinstall-always-fail": false,
       "sharp": true
+    }
+  },
+  "release-it": {
+    "plugins": {
+      "@release-it-plugins/workspaces": {
+        "workspaces": [
+          "packages/snap",
+          "packages/lib"
+        ]
+      }
+    },
+    "git": {
+      "requireCleanWorkingDir": false,
+      "commitMessage": "chore: release v${version}"
+    },
+    "hooks": {
+      "after:bump": "yarn build"
+    },
+    "npm": false,
+    "github": {
+      "release": true
     }
   }
 }
