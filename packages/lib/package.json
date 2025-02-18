@@ -23,10 +23,21 @@
   "dependencies": {
     "@metamask/providers": "18.3.1",
     "buffer": "6.0.3",
-    "casper-js-sdk": "5.0.8-beta2"
+    "casper-js-sdk": "5.0.8-beta2",
+    "release-it": "18.1.2"
   },
   "devDependencies": {
     "esdoc-typescript-plugin": "1.0.1",
     "typedoc": "0.27.5"
+  },
+  "release-it": {
+    "git": {
+      "requireCleanWorkingDir": false,
+      "commitMessage": "casper-manager-helper - chore: release v${version}",
+      "tagName": "${npm.name}@${version}"
+    },
+    "hooks": {
+      "after:bump": "rm ../../package-lock.json && git checkout ../../yarn.lock && yarn -v && yarn build"
+    }
   }
 }
