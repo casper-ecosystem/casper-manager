@@ -1,5 +1,4 @@
 /* eslint-disable no-restricted-globals */
-import type { Transaction } from 'casper-js-sdk';
 import { Deploy, PublicKey, TransactionV1 } from 'casper-js-sdk';
 
 import { SNAP_ID } from './constants';
@@ -73,15 +72,15 @@ async function signDeploy(deploy: Deploy, options: any = {}) {
 }
 
 /**
- * Sign a given Transaction Object with the corresponding public key.
+ * Sign a given TransactionV1 Object with the corresponding public key.
  * You must pass the active public key from the user and the public key
  * where the transaction is going to be used.
  *
  * @param transaction - Transaction object.
  * @param options - Options object.
- * @returns Signed deploy object.
+ * @returns Signed TransactionV1 object.
  */
-async function signTransaction(transaction: Transaction, options: any = {}) {
+async function signTransaction(transaction: TransactionV1, options: any = {}) {
   const response = (await window.ethereum.request({
     method: 'wallet_invokeSnap',
     params: {
@@ -90,9 +89,7 @@ async function signTransaction(transaction: Transaction, options: any = {}) {
         method: 'casper_sign',
         params: {
           addressIndex: options.addressIndex,
-          transaction: TransactionV1.toJSON(
-            transaction.getTransactionV1() as TransactionV1,
-          ),
+          transaction: TransactionV1.toJSON(transaction),
         },
       },
     },
@@ -101,8 +98,8 @@ async function signTransaction(transaction: Transaction, options: any = {}) {
     throw new Error(response.error);
   }
 
-  if (response.deploy) {
-    const signedTransaction = TransactionV1.fromJSON(response.deploy);
+  if (response.transaction) {
+    const signedTransaction = TransactionV1.fromJSON(response.transaction);
     if (signedTransaction.validate()) {
       return signedTransaction;
     }

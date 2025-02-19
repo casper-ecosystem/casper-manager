@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import { SNAP_ID } from './constants';
+import { SNAP_ID, SNAP_VERSION } from './constants';
 import type { GetSnapsResponse } from './types';
 
 /**
@@ -27,12 +27,15 @@ const isFlask = async () => {
  * Install the snap.
  *
  * @param snapID - ID of the snap. Default to the npm lib.
+ * @param version - Version of the snap. Default to latest.
  */
-async function installSnap(snapID = SNAP_ID) {
+async function installSnap(snapID = SNAP_ID, version = SNAP_VERSION) {
   await window.ethereum.request({
     method: 'wallet_requestSnaps',
     params: {
-      [snapID]: {},
+      [snapID]: {
+        version,
+      },
     },
   });
 }

@@ -20,6 +20,7 @@ export type GetSnapCasperAccount = {
 
 export type GetSnapCasperSign = {
   deploy: string;
+  transaction: string;
   error: string;
 };
 

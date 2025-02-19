@@ -33,16 +33,16 @@
     </v-card>
     <v-card>
       <v-card-title>
-        Sign deploy
+        Sign transaction
       </v-card-title>
       <v-card-text>
         <span v-if='publicKey === ""' class='font-weight-bold text-h6'>Please get an account above first</span>
-        <v-textarea label="Deploy" class="mt-2" :readonly='true' v-model='deployJSON'/>
-        <v-textarea label="Signed deploy" :readonly='true' v-model='signedDeployJSON'/>
-        <span>Is signed deploy valid ? {{signedDeploy ? validateDeploy : "No signed deploy yet"}}</span>
+        <v-textarea label="Transaction" class="mt-2" :readonly='true' v-model='transactionJSON'/>
+        <v-textarea label="Signed transaction" :readonly='true' v-model='signedTransactionJSON'/>
+        <span>Is signed deploy valid ? {{signedTransaction ? validateTransaction : "No signed transaction yet"}}</span>
       </v-card-text>
       <v-card-actions>
-        <v-btn @click='signDeploy' :disabled='publicKey === ""'>Sign deploy</v-btn>
+        <v-btn @click='signTransaction' :disabled='publicKey === ""'>Sign transaction</v-btn>
       </v-card-actions>
     </v-card>
     <v-card>
@@ -90,7 +90,7 @@
 </template>
 
 <script lang="ts">
-import { getAccount, signDeploy, signMessage } from '../../../lib/src/casper-manager-helper';
+import {getAccount, signDeploy, signMessage, signTransaction} from '../../../lib/src/casper-manager-helper';
 import { installSnap, getSnap } from '../../../lib/src/snap';
 import {
   Args,
@@ -99,30 +99,34 @@ import {
   Duration,
   ExecutableDeployItem,
   PublicKey,
-  Timestamp
+  Timestamp, Transaction, TransactionV1
 } from "casper-js-sdk";
-import {fakeStoredVersionContractByHash, fakeTransfer} from "snap/test/integration/utils";
+import {
+  fakeModuleBytesTransaction,
+  fakeStoredVersionContractByHash,
+  fakeTransfer
+} from "../../../snap/test/integration/utils";
 
 export default {
   name: 'Home',
   data: () => ({
     account: 0,
     publicKey: "",
-    deploy: null,
+    transaction: null,
     transfer: null,
     deployArgs: null,
-    signedDeploy: null,
+    signedTransaction: null,
     signedTransfer: null,
     signedDeployArgs: null,
     message: "test",
     messageSignature: "",
-    snapId: "local:http://localhost:8000/",
+    snapId: "npm:casper-manager",
     snapInfo: null,
   }),
   computed: {
-    deployJSON() {
+    transactionJSON() {
       try {
-        return JSON.stringify(Deploy.toJSON(this.deploy), null, 4);
+        return JSON.stringify(TransactionV1.toJSON(this.transaction), null, 4);
       } catch (e: any) {
         return e.message;
       }
@@ -148,9 +152,9 @@ export default {
         return e.message;
       }
     },
-    signedDeployJSON() {
+    signedTransactionJSON() {
       try {
-        return JSON.stringify(Deploy.toJSON(this.signedDeploy), null, 4);
+        return JSON.stringify(TransactionV1.toJSON(this.signedTransaction), null, 4);
       } catch (e: any) {
         return e.message;
       }
@@ -162,8 +166,8 @@ export default {
         return e.message;
       }
     },
-    validateDeploy() {
-      return this.signedDeploy.validate() ? "Valid signed deploy" : "Invalid signed deploy";
+    validateTransaction() {
+      return this.signedTransaction.validate() ? "Valid signed transaction" : "Invalid signed transaction";
     },
     validateDeployArgs() {
       return this.signedDeployArgs.validate() ? "Valid signed deploy" : "Invalid signed deploy";
@@ -200,14 +204,7 @@ export default {
         );
         header.account = PublicKey.fromHex(this.publicKey);
 
-        this.deploy = Deploy.makeDeploy(
-          header,
-          ExecutableDeployItem.standardPayment('1'),
-          ExecutableDeployItem.newModuleBytes(
-            new Uint8Array([0]),
-            Args.fromMap({}),
-          ),
-        );
+        this.transaction = fakeModuleBytesTransaction(this.publicKey);
         this.deployArgs = fakeStoredVersionContractByHash(this.publicKey);
         this.transfer = fakeTransfer(this.publicKey);
       }
@@ -218,7 +215,7 @@ export default {
   },
   methods: {
     async installSnap() {
-      await installSnap(this.snapId);
+      await installSnap(this.snapId, '2.0.0-alpha.0');
       await getSnap(this.snapId);
     },
     async getSnap() {
@@ -230,8 +227,8 @@ export default {
     async signMessage() {
       this.messageSignature = await signMessage(this.message, {addressIndex: this.account, snapID: this.snapId});
     },
-    async signDeploy() {
-      this.signedDeploy = await signDeploy(this.deploy, {addressIndex: this.account, snapID: this.snapId});
+    async signTransaction() {
+      this.signedTransaction = await signTransaction(this.transaction, {addressIndex: this.account, snapID: this.snapId});
     },
     async signDeployArgs() {
       this.signedDeployArgs = await signDeploy(this.deployArgs, {addressIndex: this.account, snapID: this.snapId});
