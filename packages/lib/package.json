@@ -38,6 +38,9 @@
     },
     "hooks": {
       "after:bump": "rm ../../package-lock.json && git checkout ../../yarn.lock && yarn -v && yarn build"
+    },
+    "github": {
+      "release": true
     }
   }
 }
