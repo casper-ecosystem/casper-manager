@@ -1,6 +1,6 @@
 {
   "name": "casper-manager",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0",
   "description": "Sign deploys and messages for the Casper Blockchain with your Casper account(s).",
   "repository": {
     "type": "git",
