@@ -93,13 +93,11 @@
 import {getAccount, signDeploy, signMessage, signTransaction} from '../../../lib/src/casper-manager-helper';
 import { installSnap, getSnap } from '../../../lib/src/snap';
 import {
-  Args,
   Deploy,
   DeployHeader,
   Duration,
-  ExecutableDeployItem,
   PublicKey,
-  Timestamp, Transaction, TransactionV1
+  Timestamp, TransactionV1
 } from "casper-js-sdk";
 import {
   fakeModuleBytesTransaction,
@@ -120,7 +118,7 @@ export default {
     signedDeployArgs: null,
     message: "test",
     messageSignature: "",
-    snapId: "npm:casper-manager",
+    snapId: "local:http://localhost:8000/",
     snapInfo: null,
   }),
   computed: {
@@ -215,7 +213,7 @@ export default {
   },
   methods: {
     async installSnap() {
-      await installSnap(this.snapId, '2.0.0-alpha.0');
+      await installSnap(this.snapId);
       await getSnap(this.snapId);
     },
     async getSnap() {
