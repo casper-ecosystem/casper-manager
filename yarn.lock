@@ -5973,9 +5973,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"casper-js-sdk@npm:5.0.8-beta2":
-  version: 5.0.8-beta2
-  resolution: "casper-js-sdk@npm:5.0.8-beta2"
+"casper-js-sdk@npm:5.0.10-beta2":
+  version: 5.0.10-beta2
+  resolution: "casper-js-sdk@npm:5.0.10-beta2"
   dependencies:
     "@ethersproject/bignumber": ^5.0.8
     "@ethersproject/bytes": ^5.0.5
@@ -5998,7 +5998,7 @@ __metadata:
     reflect-metadata: ^0.1.13
     ts-results: "npm:@casperlabs/ts-results@^3.3.4"
     typedjson: ^1.6.0-rc2
-  checksum: d58dc51419b0b2014afd835ae7f7245bbe618b99f61c0f95af134ffdaec2db7e9edc73c33405df5f5c74cdbde332e5fd60bf6c442e580715e38772105122b13c
+  checksum: 89f85f748f3751b4591b250807a9110124b47abc7b737e8cb1e4e0aa558708196b4c22e439e47b3465e8f2c20b8eead05bc74d787987b648165b85d80b72ae41
   languageName: node
   linkType: hard
 
@@ -6008,7 +6008,7 @@ __metadata:
   dependencies:
     "@metamask/providers": 18.3.1
     buffer: 6.0.3
-    casper-js-sdk: 5.0.8-beta2
+    casper-js-sdk: 5.0.10-beta2
     esdoc-typescript-plugin: 1.0.1
     release-it: 18.1.2
     typedoc: 0.27.5
@@ -6033,7 +6033,7 @@ __metadata:
     "@types/react-dom": 18.2.4
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
-    casper-js-sdk: 5.0.8-beta2
+    casper-js-sdk: 5.0.10-beta2
     dotenv: 16.4.7
     eslint: ^8.45.0
     eslint-config-prettier: ^8.5.0
@@ -13437,7 +13437,7 @@ __metadata:
     "@vitejs/plugin-vue": 5.2.1
     "@vue/eslint-config-typescript": 14.1.4
     buffer: ^6.0.3
-    casper-js-sdk: 5.0.8-beta2
+    casper-js-sdk: 5.0.10-beta2
     eslint: 9.17.0
     eslint-plugin-vue: 9.32.0
     globals: ^15.14.0
