@@ -1,6 +1,6 @@
 # Casper Snap
 
-Snap to enable MetaMask users interaction with [Casper](https://docs.casperlabs.io/) dapps.
+Snap to enable MetaMask users interaction with [Casper](https://docs.casper.network/) dapps.
 For detailed documentation and integration instructions see our [helper](https://casper-ecosystem.github.io/casper-manager/).
 
 Read the [FAQ](FAQ.md) and the [Knowledge Base](KnowledgeBase.md).
