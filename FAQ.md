@@ -44,4 +44,4 @@ The snap doesn't connect to the Casper Network and can't read any user informati
 
 ## How do I reach out for snap support?
 
-You can open an issue on this repository or reach out directly to @killianhash on the Casper Network discord https://discord.com/invite/casperblockchain
+You can open an issue on this repository or reach out directly to @killianhash on the [Casper Network Discord server](https://discord.gg/caspernetwork).
